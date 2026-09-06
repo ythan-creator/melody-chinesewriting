@@ -27,20 +27,23 @@
       display: flex;
       flex-direction: column;
       padding-bottom: 50px;
+      overflow-x: hidden;
+      position: relative;
     }
 
     /* 頂部 吉伊卡哇 薰衣草紫標題列 */
     header {
       background: linear-gradient(135deg, #e1bee7 0%, #ce93d8 50%, #b39ddb 100%);
-      padding: 22px 15px;
+      padding: 25px 15px;
       text-align: center;
       border-bottom: 5px solid #ab47bc;
       box-shadow: 0 4px 18px rgba(171, 71, 188, 0.3);
       position: relative;
+      overflow: hidden;
     }
 
     .header-title {
-      font-size: 2.3rem;
+      font-size: 2.4rem;
       color: #4a148c;
       text-shadow: 2px 2px 0px #ffffff;
       margin-bottom: 6px;
@@ -51,7 +54,7 @@
     }
 
     .header-sub {
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       color: #6a1b9a;
       background-color: rgba(255, 255, 255, 0.85);
       display: inline-block;
@@ -80,6 +83,8 @@
       cursor: pointer;
       transition: all 0.2s ease;
       box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+      position: relative;
+      overflow: hidden;
     }
 
     .btn:hover {
@@ -102,6 +107,51 @@
       background-color: #4a148c;
       color: #ffe0b2;
       border-color: #ffd54f;
+    }
+
+    .btn-music {
+      background-color: #fff8e1;
+      color: #f57f17;
+      border-color: #ffe082;
+    }
+
+    /* Chiikawa 可愛角色公仔裝飾 */
+    .chiikawa-mascot {
+      position: fixed;
+      z-index: 99;
+      pointer-events: none;
+      filter: drop-shadow(0 5px 10px rgba(0,0,0,0.15));
+      animation: floatAnimation 4s ease-in-out infinite;
+    }
+
+    .mascot-1 { bottom: 20px; left: 20px; width: 100px; }
+    .mascot-2 { bottom: 20px; right: 20px; width: 100px; animation-delay: -2s; }
+    .mascot-header-left { top: 10px; left: 30px; width: 70px; animation-delay: -1s; }
+    .mascot-header-right { top: 10px; right: 30px; width: 70px; animation-delay: -3s; }
+
+    @keyframes floatAnimation {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-12px) rotate(4deg); }
+    }
+
+    /* 點擊粒子動畫 */
+    .particle {
+      position: absolute;
+      pointer-events: none;
+      border-radius: 50%;
+      animation: particleDissolve 0.7s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+      z-index: 9999;
+    }
+
+    @keyframes particleDissolve {
+      0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(var(--dx), var(--dy)) scale(0);
+      }
     }
 
     /* 容器 */
@@ -239,7 +289,6 @@
       font-size: 1.2rem;
       color: #311b92;
       line-height: 1.6;
-      background-color: #f8bbd0;
       background: linear-gradient(90deg, #f3e5f5 0%, #ede7f6 100%);
       padding: 14px;
       border-radius: 12px;
@@ -386,11 +435,70 @@
 </head>
 <body>
 
+  <!-- Chiikawa 可愛公仔裝飾 (向量繪製 SVG) -->
+  <div class="chiikawa-mascot mascot-header-left">
+    <svg viewBox="0 0 100 100" width="100%">
+      <ellipse cx="50" cy="55" rx="35" ry="30" fill="#ffffff" stroke="#5a3d46" stroke-width="3"/>
+      <ellipse cx="28" cy="28" rx="8" ry="12" fill="#ffffff" stroke="#5a3d46" stroke-width="3"/>
+      <ellipse cx="72" cy="28" rx="8" ry="12" fill="#ffffff" stroke="#5a3d46" stroke-width="3"/>
+      <circle cx="38" cy="52" r="3.5" fill="#5a3d46"/>
+      <circle cx="62" cy="52" r="3.5" fill="#5a3d46"/>
+      <ellipse cx="30" cy="60" rx="4" ry="2.5" fill="#ffb6c1"/>
+      <ellipse cx="70" cy="60" rx="4" ry="2.5" fill="#ffb6c1"/>
+      <path d="M 46 58 Q 50 62 54 58" fill="none" stroke="#5a3d46" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+  </div>
+
+  <div class="chiikawa-mascot mascot-header-right">
+    <svg viewBox="0 0 100 100" width="100%">
+      <ellipse cx="50" cy="55" rx="35" ry="30" fill="#e3f2fd" stroke="#5a3d46" stroke-width="3"/>
+      <path d="M 22 28 Q 28 8 36 28 Z" fill="#e3f2fd" stroke="#5a3d46" stroke-width="3"/>
+      <path d="M 64 28 Q 72 8 78 28 Z" fill="#e3f2fd" stroke="#5a3d46" stroke-width="3"/>
+      <circle cx="38" cy="52" r="3.5" fill="#5a3d46"/>
+      <circle cx="62" cy="52" r="3.5" fill="#5a3d46"/>
+      <ellipse cx="30" cy="60" rx="4" ry="2.5" fill="#ffb6c1"/>
+      <ellipse cx="70" cy="60" rx="4" ry="2.5" fill="#ffb6c1"/>
+      <path d="M 46 59 Q 50 55 54 59" fill="none" stroke="#5a3d46" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+  </div>
+
+  <div class="chiikawa-mascot mascot-1">
+    <svg viewBox="0 0 100 100" width="100%">
+      <ellipse cx="50" cy="58" rx="38" ry="32" fill="#ffffff" stroke="#5a3d46" stroke-width="3"/>
+      <ellipse cx="25" cy="30" rx="9" ry="14" fill="#ffffff" stroke="#5a3d46" stroke-width="3"/>
+      <ellipse cx="75" cy="30" rx="9" ry="14" fill="#ffffff" stroke="#5a3d46" stroke-width="3"/>
+      <circle cx="36" cy="54" r="4" fill="#5a3d46"/>
+      <circle cx="64" cy="54" r="4" fill="#5a3d46"/>
+      <ellipse cx="28" cy="63" rx="5" ry="3" fill="#ffab91"/>
+      <ellipse cx="72" cy="63" rx="5" ry="3" fill="#ffab91"/>
+      <path d="M 45 61 Q 50 66 55 61" fill="none" stroke="#5a3d46" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+  </div>
+
+  <div class="chiikawa-mascot mascot-2">
+    <svg viewBox="0 0 100 100" width="100%">
+      <ellipse cx="50" cy="58" rx="38" ry="32" fill="#fff9c4" stroke="#5a3d46" stroke-width="3"/>
+      <ellipse cx="32" cy="20" rx="6" ry="18" fill="#fff9c4" stroke="#5a3d46" stroke-width="3"/>
+      <ellipse cx="68" cy="20" rx="6" ry="18" fill="#fff9c4" stroke="#5a3d46" stroke-width="3"/>
+      <circle cx="36" cy="54" r="4" fill="#5a3d46"/>
+      <circle cx="64" cy="54" r="4" fill="#5a3d46"/>
+      <ellipse cx="28" cy="63" rx="5" ry="3" fill="#ffab91"/>
+      <ellipse cx="72" cy="63" rx="5" ry="3" fill="#ffab91"/>
+      <path d="M 44 60 Q 50 67 56 60 Z" fill="#5a3d46"/>
+    </svg>
+  </div>
+
+  <!-- 背景輕音樂播放器 (自動循環播放) -->
+  <audio id="bgm-player" loop preload="auto">
+    <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=relaxing-piano-10850.mp3" type="audio/mpeg">
+  </audio>
+
   <!-- 頂部吉伊卡哇紫色標題列 -->
   <header>
     <div class="header-title">💜 Melody的寫作百寶袋 💜</div>
     <div class="header-sub">吉伊卡哇陪伴學習 · 香港小學中文寫作平台</div>
     <div class="nav-controls">
+      <button class="btn btn-music" id="btn-music" onclick="toggleMusic()">🎵 背景音樂: 關閉</button>
       <button class="btn" onclick="showGateway()">🌸 切換年級</button>
       <button class="btn btn-teacher" id="btn-toggle-teacher" onclick="handleTeacherToggle()">👩‍🏫 切換教師模式 <span id="teacher-status">(關閉)</span></button>
     </div>
@@ -402,15 +510,15 @@
     <div id="grade-gateway">
       <div class="gateway-title">✨ 請選擇你的年級，開啟寫作百寶袋 ✨</div>
       <div class="grade-cards-grid">
-        <div class="grade-card" onclick="selectGrade('G4')">
+        <div class="grade-card" onclick="selectGrade('G4', event)">
           <div class="grade-badge">G4 (小四)</div>
           <div class="grade-desc">✨ 基礎積累區<br>學習五感描寫、豐富詞彙與基礎比喻修辭</div>
         </div>
-        <div class="grade-card" onclick="selectGrade('G5')">
+        <div class="grade-card" onclick="selectGrade('G5', event)">
           <div class="grade-badge">G5 (小五)</div>
           <div class="grade-desc">🚀 能力進階區<br>掌握動作拆解、心理描寫與段落銜接技巧</div>
         </div>
-        <div class="grade-card" onclick="selectGrade('G6')">
+        <div class="grade-card" onclick="selectGrade('G6', event)">
           <div class="grade-badge">G6 (小六)</div>
           <div class="grade-desc">👑 拔尖昇華區<br>精通情景交融、欲揚先抑與呈分試高分立意</div>
         </div>
@@ -421,9 +529,6 @@
     <div id="main-dashboard">
       <div class="dashboard-header">
         <div class="current-grade-tag" id="current-grade-title">小四 (G4) 寫作百寶袋</div>
-        <div>
-          <button class="btn" onclick="readAloud()">🗣️ 普通話朗讀今日好句</button>
-        </div>
       </div>
 
       <!-- 每日好詞好句日曆 -->
@@ -450,13 +555,13 @@
         <!-- 動態載入或顯示空白 -->
       </div>
       <div id="teacher-lesson-add-area" class="teacher-action-area" style="display: none;">
-        <button class="btn btn-teacher" onclick="openAddLessonModal()">➕ 新增本週寫作課堂秘笈</button>
+        <button class="btn btn-teacher" onclick="openAddLessonModal(event)">➕ 新增本週寫作課堂秘笈</button>
       </div>
 
       <!-- 佳作展示區 -->
       <div class="section-title">
         <span>🌟 學生佳作與好詞句分享</span>
-        <button class="btn" style="margin-left: auto;" onclick="openSubmitModal()">✍️ 我要投稿分享</button>
+        <button class="btn" style="margin-left: auto;" onclick="openSubmitModal(event)">✍️ 我要投稿分享</button>
       </div>
       <div id="posts-container">
         <!-- 動態載入學生投稿或顯示空白 -->
@@ -474,7 +579,7 @@
       </div>
       <div class="modal-btns">
         <button class="btn" onclick="closeModal('password-modal')">取消</button>
-        <button class="btn btn-teacher" onclick="verifyPassword()">驗證登入</button>
+        <button class="btn btn-teacher" onclick="verifyPassword(event)">驗證登入</button>
       </div>
     </div>
   </div>
@@ -501,7 +606,7 @@
       </div>
       <div class="modal-btns">
         <button class="btn" onclick="closeModal('lesson-modal')">取消</button>
-        <button class="btn btn-teacher" onclick="saveLesson()">發佈課堂</button>
+        <button class="btn btn-teacher" onclick="saveLesson(event)">發佈課堂</button>
       </div>
     </div>
   </div>
@@ -531,7 +636,7 @@
       </div>
       <div class="modal-btns">
         <button class="btn" onclick="closeModal('submit-modal')">取消</button>
-        <button class="btn" onclick="saveStudentPost()">提交作品</button>
+        <button class="btn" onclick="saveStudentPost(event)">提交作品</button>
       </div>
     </div>
   </div>
@@ -540,6 +645,7 @@
     // 狀態管理
     let currentGrade = 'G4';
     let isTeacherMode = false;
+    let isMusicPlaying = false;
     const TEACHER_PWD = "hanyutong";
 
     // 每日好詞好句數據庫（根據年級區分難度）
@@ -564,6 +670,55 @@
       posts: { G4: [], G5: [], G6: [] }
     };
 
+    // 全局點擊消散粒子特效
+    document.addEventListener('click', function(e) {
+      createDissolveParticles(e.clientX, e.clientY);
+    });
+
+    function createDissolveParticles(x, y) {
+      const colors = ['#ab47bc', '#ce93d8', '#e1bee7', '#f8bbd0', '#ffd54f'];
+      for (let i = 0; i < 12; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        document.body.appendChild(particle);
+
+        const size = Math.random() * 8 + 4;
+        particle.style.width = size + 'px';
+        particle.style.height = size + 'px';
+        particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+        particle.style.left = x + 'px';
+        particle.style.top = y + 'px';
+
+        const angle = Math.random() * Math.PI * 2;
+        const velocity = Math.random() * 60 + 20;
+        const dx = Math.cos(angle) * velocity + 'px';
+        const dy = Math.sin(angle) * velocity + 'px';
+
+        particle.style.setProperty('--dx', dx);
+        particle.style.setProperty('--dy', dy);
+
+        setTimeout(() => particle.remove(), 700);
+      }
+    }
+
+    // 控制背景音樂播放/暫停
+    function toggleMusic() {
+      const audio = document.getElementById('bgm-player');
+      const btn = document.getElementById('btn-music');
+      if (isMusicPlaying) {
+        audio.pause();
+        isMusicPlaying = false;
+        btn.innerText = "🎵 背景音樂: 關閉";
+      } else {
+        audio.play().then(() => {
+          isMusicPlaying = true;
+          btn.innerText = "🎶 背景音樂: 播放中";
+        }).catch(() => {
+          alert("請再次點擊頁面以允許音訊播放！");
+        });
+      }
+    }
+
     // 初始化日曆
     function initCalendar() {
       const now = new Date();
@@ -578,7 +733,8 @@
     }
 
     // 選擇年級
-    function selectGrade(grade) {
+    function selectGrade(grade, event) {
+      if (event) event.stopPropagation();
       currentGrade = grade;
       document.getElementById('grade-gateway').style.display = 'none';
       document.getElementById('main-dashboard').style.display = 'block';
@@ -612,7 +768,8 @@
     }
 
     // 驗證教師密碼
-    function verifyPassword() {
+    function verifyPassword(event) {
+      if (event) event.stopPropagation();
       const pwd = document.getElementById('input-teacher-pwd').value;
       if (pwd === TEACHER_PWD) {
         isTeacherMode = true;
@@ -708,7 +865,8 @@
     }
 
     // 儲存課堂
-    function saveLesson() {
+    function saveLesson(event) {
+      if (event) event.stopPropagation();
       const title = document.getElementById('input-lesson-title').value.trim();
       const tech = document.getElementById('input-lesson-tech').value.trim();
       const before = document.getElementById('input-lesson-before').value.trim();
@@ -731,7 +889,8 @@
     }
 
     // 儲存學生作品
-    function saveStudentPost() {
+    function saveStudentPost(event) {
+      if (event) event.stopPropagation();
       const name = document.getElementById('input-student-name').value.trim();
       const type = document.getElementById('input-post-type').value;
       const title = document.getElementById('input-post-title').value.trim();
@@ -752,21 +911,9 @@
       document.getElementById('input-post-content').value = '';
     }
 
-    // 普通話語音朗讀 API (Mandarin TTS)
-    function readAloud() {
-      const sentence = document.getElementById('daily-sentence').innerText;
-      if ('speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(sentence);
-        utterance.lang = 'zh-CN'; // 設定為普通話朗讀
-        speechSynthesis.speak(utterance);
-      } else {
-        alert("你的瀏覽器不支援語音播放功能。");
-      }
-    }
-
     // 彈窗控制
-    function openAddLessonModal() { document.getElementById('lesson-modal').style.display = 'flex'; }
-    function openSubmitModal() { document.getElementById('submit-modal').style.display = 'flex'; }
+    function openAddLessonModal(event) { if (event) event.stopPropagation(); document.getElementById('lesson-modal').style.display = 'flex'; }
+    function openSubmitModal(event) { if (event) event.stopPropagation(); document.getElementById('submit-modal').style.display = 'flex'; }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
     // 初始化頁面
