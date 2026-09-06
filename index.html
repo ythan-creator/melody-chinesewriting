@@ -134,7 +134,7 @@
       50% { transform: translateY(-12px) rotate(4deg); }
     }
 
-    /* 點擊粒子動畫 */
+    /* 點擊粒子消散動畫 */
     .particle {
       position: absolute;
       pointer-events: none;
@@ -165,50 +165,48 @@
     /* 1. 年級選擇首頁 Gateway */
     #grade-gateway {
       text-align: center;
-      padding: 30px 10px;
+      padding: 50px 10px;
     }
 
     .gateway-title {
-      font-size: 2.1rem;
+      font-size: 2.2rem;
       color: #6a1b9a;
-      margin-bottom: 25px;
+      margin-bottom: 35px;
     }
 
     .grade-cards-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 25px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 30px;
+      max-width: 800px;
+      margin: 0 auto;
     }
 
     .grade-card {
       background: white;
       border: 4px solid #e1bee7;
-      border-radius: 22px;
-      padding: 32px 20px;
+      border-radius: 25px;
+      padding: 40px 20px;
       cursor: pointer;
       transition: all 0.3s ease;
       box-shadow: 0 8px 20px rgba(206, 147, 216, 0.35);
       position: relative;
       overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     .grade-card:hover {
-      transform: translateY(-8px) scale(1.02);
+      transform: translateY(-8px) scale(1.03);
       border-color: #ab47bc;
-      box-shadow: 0 12px 25px rgba(171, 71, 188, 0.4);
+      box-shadow: 0 12px 25px rgba(171, 71, 188, 0.45);
     }
 
     .grade-badge {
-      font-size: 2.5rem;
+      font-size: 2.8rem;
       color: #7b1fa2;
       font-weight: bold;
-      margin-bottom: 10px;
-    }
-
-    .grade-desc {
-      font-size: 1.15rem;
-      color: #4a148c;
-      line-height: 1.6;
     }
 
     /* 2. 主學習介面 */
@@ -435,7 +433,7 @@
 </head>
 <body>
 
-  <!-- Chiikawa 可愛公仔裝飾 (向量繪製 SVG) -->
+  <!-- Chiikawa 可愛公仔裝飾 (SVG 畫布) -->
   <div class="chiikawa-mascot mascot-header-left">
     <svg viewBox="0 0 100 100" width="100%">
       <ellipse cx="50" cy="55" rx="35" ry="30" fill="#ffffff" stroke="#5a3d46" stroke-width="3"/>
@@ -488,9 +486,10 @@
     </svg>
   </div>
 
-  <!-- 背景輕音樂播放器 (自動循環播放) -->
+  <!-- 背景輕音樂播放器：《起風了》鋼琴純音樂版 -->
   <audio id="bgm-player" loop preload="auto">
-    <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=relaxing-piano-10850.mp3" type="audio/mpeg">
+    <source src="https://raw.githubusercontent.com/AnsonMao/music-resources/main/qifengliao.mp3" type="audio/mpeg">
+    <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=piano.mp3" type="audio/mpeg">
   </audio>
 
   <!-- 頂部吉伊卡哇紫色標題列 -->
@@ -512,15 +511,12 @@
       <div class="grade-cards-grid">
         <div class="grade-card" onclick="selectGrade('G4', event)">
           <div class="grade-badge">G4 (小四)</div>
-          <div class="grade-desc">✨ 基礎積累區<br>學習五感描寫、豐富詞彙與基礎比喻修辭</div>
         </div>
         <div class="grade-card" onclick="selectGrade('G5', event)">
           <div class="grade-badge">G5 (小五)</div>
-          <div class="grade-desc">🚀 能力進階區<br>掌握動作拆解、心理描寫與段落銜接技巧</div>
         </div>
         <div class="grade-card" onclick="selectGrade('G6', event)">
           <div class="grade-badge">G6 (小六)</div>
-          <div class="grade-desc">👑 拔尖昇華區<br>精通情景交融、欲揚先抑與呈分試高分立意</div>
         </div>
       </div>
     </div>
@@ -648,7 +644,7 @@
     let isMusicPlaying = false;
     const TEACHER_PWD = "hanyutong";
 
-    // 每日好詞好句數據庫（根據年級區分難度）
+    // 每日好詞好句數據庫
     const dailyData = {
       G4: {
         word: "【繁星點點】",
@@ -701,7 +697,7 @@
       }
     }
 
-    // 控制背景音樂播放/暫停
+    // 控制背景音樂播放/暫停（《起風了》鋼琴純音樂）
     function toggleMusic() {
       const audio = document.getElementById('bgm-player');
       const btn = document.getElementById('btn-music');
@@ -712,7 +708,7 @@
       } else {
         audio.play().then(() => {
           isMusicPlaying = true;
-          btn.innerText = "🎶 背景音樂: 播放中";
+          btn.innerText = "🎶 播放中：《起風了》";
         }).catch(() => {
           alert("請再次點擊頁面以允許音訊播放！");
         });
