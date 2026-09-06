@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>美樂蒂寫作樂園 - 香港小學生中文寫作學習平台</title>
+  <title>Melody的寫作百寶袋 - 吉伊卡哇主題學習平台</title>
   <!-- Google Fonts 楷體載入，確保各裝置顯示標準標楷體 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,32 +18,32 @@
     }
 
     body {
-      background-color: #fff0f5;
-      background-image: radial-gradient(#ffb6c1 1.5px, transparent 1.5px), radial-gradient(#ffb6c1 1.5px, #fff0f5 1.5px);
+      background-color: #f3e5f5;
+      background-image: radial-gradient(#ce93d8 1.5px, transparent 1.5px), radial-gradient(#ce93d8 1.5px, #f3e5f5 1.5px);
       background-size: 60px 60px;
       background-position: 0 0, 30px 30px;
-      color: #5a3d46;
+      color: #4a148c;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       padding-bottom: 50px;
     }
 
-    /* 頂部 Melody 標題列 */
+    /* 頂部 吉伊卡哇 薰衣草紫標題列 */
     header {
-      background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
-      padding: 20px 15px;
+      background: linear-gradient(135deg, #e1bee7 0%, #ce93d8 50%, #b39ddb 100%);
+      padding: 22px 15px;
       text-align: center;
-      border-bottom: 5px solid #ff69b4;
-      box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+      border-bottom: 5px solid #ab47bc;
+      box-shadow: 0 4px 18px rgba(171, 71, 188, 0.3);
       position: relative;
     }
 
     .header-title {
-      font-size: 2.2rem;
-      color: #d81b60;
+      font-size: 2.3rem;
+      color: #4a148c;
       text-shadow: 2px 2px 0px #ffffff;
-      margin-bottom: 5px;
+      margin-bottom: 6px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -52,12 +52,13 @@
 
     .header-sub {
       font-size: 1.1rem;
-      color: #880e4f;
-      background-color: rgba(255, 255, 255, 0.7);
+      color: #6a1b9a;
+      background-color: rgba(255, 255, 255, 0.85);
       display: inline-block;
-      padding: 4px 15px;
+      padding: 4px 18px;
       border-radius: 20px;
       margin-top: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     }
 
     .nav-controls {
@@ -70,30 +71,30 @@
 
     .btn {
       background-color: #ffffff;
-      color: #ff4081;
-      border: 2px solid #ff80ab;
-      padding: 8px 18px;
+      color: #8e24aa;
+      border: 2px solid #ba68c8;
+      padding: 8px 20px;
       border-radius: 25px;
       font-size: 1.05rem;
       font-weight: bold;
       cursor: pointer;
       transition: all 0.2s ease;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+      box-shadow: 0 3px 6px rgba(0,0,0,0.08);
     }
 
     .btn:hover {
-      background-color: #ff4081;
+      background-color: #ab47bc;
       color: #ffffff;
       transform: translateY(-2px);
     }
 
     .btn-teacher {
-      background-color: #8e24aa;
+      background-color: #7b1fa2;
       color: white;
-      border-color: #ab47bc;
+      border-color: #9c27b0;
     }
     .btn-teacher:hover {
-      background-color: #ab47bc;
+      background-color: #9c27b0;
       color: white;
     }
 
@@ -118,8 +119,8 @@
     }
 
     .gateway-title {
-      font-size: 2rem;
-      color: #c2185b;
+      font-size: 2.1rem;
+      color: #6a1b9a;
       margin-bottom: 25px;
     }
 
@@ -131,32 +132,32 @@
 
     .grade-card {
       background: white;
-      border: 4px solid #ffb6c1;
-      border-radius: 20px;
-      padding: 30px 20px;
+      border: 4px solid #e1bee7;
+      border-radius: 22px;
+      padding: 32px 20px;
       cursor: pointer;
       transition: all 0.3s ease;
-      box-shadow: 0 8px 20px rgba(255, 182, 193, 0.4);
+      box-shadow: 0 8px 20px rgba(206, 147, 216, 0.35);
       position: relative;
       overflow: hidden;
     }
 
     .grade-card:hover {
       transform: translateY(-8px) scale(1.02);
-      border-color: #ff4081;
-      box-shadow: 0 12px 25px rgba(255, 64, 129, 0.4);
+      border-color: #ab47bc;
+      box-shadow: 0 12px 25px rgba(171, 71, 188, 0.4);
     }
 
     .grade-badge {
       font-size: 2.5rem;
-      color: #d81b60;
+      color: #7b1fa2;
       font-weight: bold;
       margin-bottom: 10px;
     }
 
     .grade-desc {
       font-size: 1.15rem;
-      color: #6a1b9a;
+      color: #4a148c;
       line-height: 1.6;
     }
 
@@ -167,9 +168,9 @@
 
     .dashboard-header {
       background-color: white;
-      border: 3px dashed #ff80ab;
-      border-radius: 15px;
-      padding: 12px 20px;
+      border: 3px dashed #ba68c8;
+      border-radius: 18px;
+      padding: 14px 22px;
       margin-bottom: 25px;
       display: flex;
       justify-content: space-between;
@@ -179,19 +180,19 @@
     }
 
     .current-grade-tag {
-      font-size: 1.4rem;
-      color: #c2185b;
+      font-size: 1.45rem;
+      color: #6a1b9a;
       font-weight: bold;
     }
 
     /* 日曆板塊 */
     .calendar-card {
       background: white;
-      border: 3px solid #ffb6c1;
+      border: 3px solid #ce93d8;
       border-radius: 20px;
-      padding: 20px;
+      padding: 22px;
       margin-bottom: 30px;
-      box-shadow: 0 6px 15px rgba(0,0,0,0.05);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.04);
       display: flex;
       gap: 20px;
       align-items: center;
@@ -199,13 +200,13 @@
     }
 
     .date-box {
-      background: linear-gradient(180deg, #ff80ab 0%, #ff4081 100%);
+      background: linear-gradient(180deg, #ab47bc 0%, #7b1fa2 100%);
       color: white;
-      border-radius: 15px;
+      border-radius: 16px;
       padding: 15px 25px;
       text-align: center;
       min-width: 140px;
-      box-shadow: 0 4px 10px rgba(255, 64, 129, 0.3);
+      box-shadow: 0 4px 12px rgba(123, 31, 162, 0.3);
     }
 
     .date-box .year-month { font-size: 1rem; }
@@ -219,50 +220,52 @@
 
     .daily-title-tag {
       display: inline-block;
-      background-color: #ffe0b2;
-      color: #e65100;
-      padding: 4px 12px;
+      background-color: #f3e5f5;
+      color: #7b1fa2;
+      padding: 4px 14px;
       border-radius: 12px;
-      font-size: 0.95rem;
+      font-size: 1rem;
       margin-bottom: 8px;
+      border: 1px solid #e1bee7;
     }
 
     .word-text {
       font-size: 1.8rem;
-      color: #d81b60;
+      color: #6a1b9a;
       margin-bottom: 8px;
     }
 
     .sentence-text {
       font-size: 1.2rem;
-      color: #4a148c;
+      color: #311b92;
       line-height: 1.6;
-      background-color: #f3e5f5;
-      padding: 12px;
-      border-radius: 10px;
-      border-left: 4px solid #ab47bc;
+      background-color: #f8bbd0;
+      background: linear-gradient(90deg, #f3e5f5 0%, #ede7f6 100%);
+      padding: 14px;
+      border-radius: 12px;
+      border-left: 5px solid #8e24aa;
     }
 
     /* 區塊標題 */
     .section-title {
-      font-size: 1.6rem;
-      color: #880e4f;
+      font-size: 1.65rem;
+      color: #4a148c;
       margin: 35px 0 15px 0;
       display: flex;
       align-items: center;
       gap: 10px;
-      border-bottom: 2px solid #ffb6c1;
+      border-bottom: 2px solid #ce93d8;
       padding-bottom: 8px;
     }
 
     /* 空白狀態卡片（教師/學生專用） */
     .empty-card {
       background: white;
-      border: 2px dashed #e0e0e0;
-      border-radius: 15px;
+      border: 2px dashed #ce93d8;
+      border-radius: 16px;
       padding: 40px 20px;
       text-align: center;
-      color: #9e9e9e;
+      color: #8e24aa;
       font-size: 1.2rem;
       margin-bottom: 20px;
     }
@@ -271,20 +274,20 @@
       margin-top: 15px;
     }
 
-    /* 課堂卡片 */
+    /* 課堂與作品卡片 */
     .lesson-card, .post-card {
       background: white;
-      border: 2px solid #f8bbd0;
-      border-radius: 15px;
-      padding: 20px;
+      border: 2px solid #e1bee7;
+      border-radius: 18px;
+      padding: 22px;
       margin-bottom: 20px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
       position: relative;
     }
 
     .lesson-card h3, .post-card h3 {
-      color: #c2185b;
-      font-size: 1.4rem;
+      color: #6a1b9a;
+      font-size: 1.45rem;
       margin-bottom: 10px;
       padding-right: 60px;
     }
@@ -293,31 +296,31 @@
       position: absolute;
       top: 15px;
       right: 15px;
-      background-color: #ff1744;
+      background-color: #e53935;
       color: white;
       border: none;
-      padding: 4px 10px;
+      padding: 5px 12px;
       border-radius: 8px;
       cursor: pointer;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
     }
 
     .technique-tag {
       display: inline-block;
       background-color: #e1bee7;
       color: #4a148c;
-      padding: 3px 10px;
-      border-radius: 10px;
-      font-size: 0.9rem;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.95rem;
       margin-bottom: 10px;
     }
 
     .example-box {
       background-color: #fff8e1;
-      border-left: 4px solid #ffb300;
-      padding: 10px 15px;
+      border-left: 4px solid #ffa726;
+      padding: 12px 16px;
       margin: 10px 0;
-      border-radius: 5px;
+      border-radius: 6px;
       font-size: 1.1rem;
     }
 
@@ -334,17 +337,17 @@
 
     .modal-content {
       background: white;
-      border-radius: 20px;
+      border-radius: 22px;
       padding: 25px;
       width: 90%;
       max-width: 550px;
-      border: 4px solid #ff80ab;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      border: 4px solid #ba68c8;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
     }
 
     .modal-title {
-      font-size: 1.5rem;
-      color: #c2185b;
+      font-size: 1.55rem;
+      color: #6a1b9a;
       margin-bottom: 15px;
       text-align: center;
     }
@@ -363,14 +366,14 @@
     .form-group input, .form-group textarea, .form-group select {
       width: 100%;
       padding: 10px;
-      border: 2px solid #f8bbd0;
+      border: 2px solid #e1bee7;
       border-radius: 10px;
       font-size: 1.05rem;
       outline: none;
     }
 
     .form-group input:focus, .form-group textarea:focus {
-      border-color: #ff4081;
+      border-color: #ab47bc;
     }
 
     .modal-btns {
@@ -383,10 +386,10 @@
 </head>
 <body>
 
-  <!-- 頁尾 header -->
+  <!-- 頂部吉伊卡哇紫色標題列 -->
   <header>
-    <div class="header-title">🎀 美樂蒂寫作樂園 🎀</div>
-    <div class="header-sub">香港小學中文寫作提升平台</div>
+    <div class="header-title">💜 Melody的寫作百寶袋 💜</div>
+    <div class="header-sub">吉伊卡哇陪伴學習 · 香港小學中文寫作平台</div>
     <div class="nav-controls">
       <button class="btn" onclick="showGateway()">🌸 切換年級</button>
       <button class="btn btn-teacher" id="btn-toggle-teacher" onclick="handleTeacherToggle()">👩‍🏫 切換教師模式 <span id="teacher-status">(關閉)</span></button>
@@ -397,7 +400,7 @@
     
     <!-- 1. 年級選擇首頁 -->
     <div id="grade-gateway">
-      <div class="gateway-title">🌸 請選擇你的年級開始學習 🌸</div>
+      <div class="gateway-title">✨ 請選擇你的年級，開啟寫作百寶袋 ✨</div>
       <div class="grade-cards-grid">
         <div class="grade-card" onclick="selectGrade('G4')">
           <div class="grade-badge">G4 (小四)</div>
@@ -417,9 +420,9 @@
     <!-- 2. 主介面 Dashboard -->
     <div id="main-dashboard">
       <div class="dashboard-header">
-        <div class="current-grade-tag" id="current-grade-title">小四 (G4) 寫作學習空間</div>
+        <div class="current-grade-tag" id="current-grade-title">小四 (G4) 寫作百寶袋</div>
         <div>
-          <button class="btn" onclick="readAloud()">🔊 語音朗讀今日好句</button>
+          <button class="btn" onclick="readAloud()">🗣️ 普通話朗讀今日好句</button>
         </div>
       </div>
 
@@ -580,7 +583,7 @@
       document.getElementById('grade-gateway').style.display = 'none';
       document.getElementById('main-dashboard').style.display = 'block';
       
-      const titleMap = { G4: "小四 (G4) 寫作學習空間", G5: "小五 (G5) 寫作學習空間", G6: "小六 (G6) 寫作學習空間" };
+      const titleMap = { G4: "小四 (G4) 寫作百寶袋", G5: "小五 (G5) 寫作百寶袋", G6: "小六 (G6) 寫作百寶袋" };
       document.getElementById('current-grade-title').innerText = titleMap[grade];
 
       // 更新每日詞句
@@ -648,7 +651,7 @@
         container.innerHTML = `
           <div class="empty-card">
             📖 目前老師尚未發佈本週寫作課堂。<br>
-            <small style="font-size:0.95rem; color:#b0bec5;">(請教師開啟右上角「教師編輯模式」進行課程編寫)</small>
+            <small style="font-size:0.95rem; color:#8e24aa;">(請教師開啟右上角「教師編輯模式」進行課程編寫)</small>
           </div>
         `;
         return;
@@ -690,8 +693,8 @@
       container.innerHTML = list.map((item, index) => `
         <div class="post-card">
           ${isTeacherMode ? `<button class="delete-btn" onclick="deletePost(${index})">🗑️ 刪除</button>` : ''}
-          <h3>${item.title} <small style="font-size:0.9rem; color:#ab47bc;">[${item.type}] - ${item.name} 同學</small></h3>
-          <p style="font-size:1.15rem; line-height:1.6; color:#37474f;">${item.content}</p>
+          <h3>${item.title} <small style="font-size:0.9rem; color:#8e24aa;">[${item.type}] - ${item.name} 同學</small></h3>
+          <p style="font-size:1.15rem; line-height:1.6; color:#311b92;">${item.content}</p>
         </div>
       `).join('');
     }
@@ -749,12 +752,12 @@
       document.getElementById('input-post-content').value = '';
     }
 
-    // 語音朗讀 API
+    // 普通話語音朗讀 API (Mandarin TTS)
     function readAloud() {
       const sentence = document.getElementById('daily-sentence').innerText;
       if ('speechSynthesis' in window) {
         const utterance = new SpeechSynthesisUtterance(sentence);
-        utterance.lang = 'zh-HK'; // 廣東話朗讀
+        utterance.lang = 'zh-CN'; // 設定為普通話朗讀
         speechSynthesis.speak(utterance);
       } else {
         alert("你的瀏覽器不支援語音播放功能。");
