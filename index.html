@@ -8,6 +8,29 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&display=swap" rel="stylesheet">
+  
+  <!-- 載入 Firebase 雲端資料庫 SDK (使用模組版本) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, push, onValue, set, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    // 免費公共 Firebase 即時雲端資料庫配置
+    const firebaseConfig = {
+      databaseURL: "https://melody-bag-default-rtdb.firebaseio.com"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // 將 Firebase 函數掛載到全域 window 上供網頁調用
+    window.db = db;
+    window.dbRef = ref;
+    window.dbPush = push;
+    window.dbOnValue = onValue;
+    window.dbSet = set;
+    window.dbRemove = remove;
+  </script>
+
   <style>
     /* 全站字體強制設置為標準標楷體 */
     * {
@@ -605,7 +628,7 @@
   <div class="modal" id="lesson-modal">
     <div class="modal-content">
       <div class="modal-title" id="lesson-modal-title">👩‍🏫 發佈寫作課堂秘笈</div>
-      <input type="hidden" id="editing-lesson-index" value="-1">
+      <input type="hidden" id="editing-lesson-id" value="">
       <div class="form-group">
         <label>課堂主題：</label>
         <input type="text" id="input-lesson-title" placeholder="例如：如何把人物寫得栩栩如生">
@@ -667,9 +690,8 @@
     let currentGrade = 'G4';
     let isTeacherMode = false;
     const TEACHER_PWD = "hanyutong";
-    const STORAGE_KEY = "melody_writing_app_data_v1";
 
-    // 多天輪換的好詞好句庫（隨日期演算法輪換）
+    // 每日輪換詞句庫
     const dailyPool = {
       G4: [
         { word: "【繁星點點】", sentence: "夜幕降臨，天空像鋪上了一塊深藍色的絨布，上面綴滿了繁星點點，眨著好奇的眼睛。" },
@@ -688,39 +710,37 @@
       ]
     };
 
-    // 預設數據結構
-    let appData = {
-      lessons: { G4: [], G5: [], G6: [] },
-      approvedPosts: { G4: [], G5: [], G6: [] },
-      pendingPosts: { G4: [], G5: [], G6: [] }
-    };
+    // 雲端數據即時同步
+    let currentLessons = {};
+    let currentApprovedPosts = {};
+    let currentPendingPosts = {};
 
-    // 從 localStorage 讀取數據
-    function loadStorageData() {
-      try {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-          appData = JSON.parse(saved);
-          // 確保數據結構完整
-          if (!appData.lessons) appData.lessons = { G4: [], G5: [], G6: [] };
-          if (!appData.approvedPosts) appData.approvedPosts = { G4: [], G5: [], G6: [] };
-          if (!appData.pendingPosts) appData.pendingPosts = { G4: [], G5: [], G6: [] };
-        }
-      } catch (e) {
-        console.error("讀取本地數據失敗", e);
+    function listenFirebaseData() {
+      if (!window.db) {
+        setTimeout(listenFirebaseData, 200);
+        return;
       }
+
+      // 監聽寫作課堂
+      window.dbOnValue(window.dbRef(window.db, `lessons/${currentGrade}`), (snapshot) => {
+        currentLessons = snapshot.val() || {};
+        renderLessons();
+      });
+
+      // 監聽公開作品
+      window.dbOnValue(window.dbRef(window.db, `approvedPosts/${currentGrade}`), (snapshot) => {
+        currentApprovedPosts = snapshot.val() || {};
+        renderPosts();
+      });
+
+      // 監聽待審核作品
+      window.dbOnValue(window.dbRef(window.db, `pendingPosts/${currentGrade}`), (snapshot) => {
+        currentPendingPosts = snapshot.val() || {};
+        renderPosts();
+      });
     }
 
-    // 將數據寫入 localStorage 保存
-    function persistData() {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
-      } catch (e) {
-        console.error("保存本地數據失敗", e);
-      }
-    }
-
-    // 全局點擊粒子消散特效
+    // 全局點擊粒子特效
     document.addEventListener('click', function(e) {
       createDissolveParticles(e.clientX, e.clientY);
     });
@@ -751,7 +771,7 @@
       }
     }
 
-    // 初始化日曆與日期自動輪換好詞好句
+    // 初始化日曆
     function initCalendarAndDailyWord() {
       const now = new Date();
       const year = now.getFullYear();
@@ -782,17 +802,16 @@
       document.getElementById('current-grade-title').innerText = titleMap[grade];
 
       initCalendarAndDailyWord();
-      renderLessons();
-      renderPosts();
+      listenFirebaseData();
     }
 
-    // 切換返回年級首頁
+    // 返航首頁
     function showGateway() {
       document.getElementById('grade-gateway').style.display = 'block';
       document.getElementById('main-dashboard').style.display = 'none';
     }
 
-    // 教師模式切換處理
+    // 教師模式切換
     function handleTeacherToggle() {
       if (!isTeacherMode) {
         document.getElementById('password-modal').style.display = 'flex';
@@ -803,7 +822,6 @@
       }
     }
 
-    // 驗證教師密碼
     function verifyPassword(event) {
       if (event) event.stopPropagation();
       const pwd = document.getElementById('input-teacher-pwd').value;
@@ -816,7 +834,6 @@
       }
     }
 
-    // 更新 UI 狀態
     function updateTeacherUI() {
       const btn = document.getElementById('btn-toggle-teacher');
       const statusText = document.getElementById('teacher-status');
@@ -837,12 +854,12 @@
       renderPosts();
     }
 
-    // 渲染每週寫作課堂
+    // 渲染寫作課堂
     function renderLessons() {
       const container = document.getElementById('lessons-container');
-      const list = appData.lessons[currentGrade] || [];
+      const keys = Object.keys(currentLessons);
 
-      if (list.length === 0) {
+      if (keys.length === 0) {
         container.innerHTML = `
           <div class="empty-card">
             📖 目前老師尚未發佈本週寫作課堂。<br>
@@ -852,27 +869,29 @@
         return;
       }
 
-      container.innerHTML = list.map((item, index) => `
-        <div class="lesson-card">
-          ${isTeacherMode ? `
-            <div class="card-actions">
-              <button class="btn-edit" onclick="openEditLessonModal(${index}, event)">✏️ 編輯</button>
-              <button class="delete-btn" onclick="deleteLesson(${index})">🗑️ 刪除</button>
-            </div>
-          ` : ''}
-          <h3>${item.title}</h3>
-          <span class="technique-tag">💡 技巧：${item.tech}</span>
-          <div class="example-box"><strong>❌ 普通描寫：</strong>${item.before}</div>
-          <div class="example-box" style="background-color:#e8f5e9; border-left-color:#66bb6a;"><strong>✨ 升級好句：</strong>${item.after}</div>
-        </div>
-      `).join('');
+      container.innerHTML = keys.map((key) => {
+        const item = currentLessons[key];
+        return `
+          <div class="lesson-card">
+            ${isTeacherMode ? `
+              <div class="card-actions">
+                <button class="btn-edit" onclick="openEditLessonModal('${key}', event)">✏️ 編輯</button>
+                <button class="delete-btn" onclick="deleteLesson('${key}')">🗑️ 刪除</button>
+              </div>
+            ` : ''}
+            <h3>${item.title}</h3>
+            <span class="technique-tag">💡 技巧：${item.tech}</span>
+            <div class="example-box"><strong>❌ 普通描寫：</strong>${item.before}</div>
+            <div class="example-box" style="background-color:#e8f5e9; border-left-color:#66bb6a;"><strong>✨ 升級好句：</strong>${item.after}</div>
+          </div>
+        `;
+      }).join('');
     }
 
-    // 開啟新增寫作秘笈彈窗
     function openAddLessonModal(event) {
       if (event) event.stopPropagation();
       document.getElementById('lesson-modal-title').innerText = "👩‍🏫 發佈寫作課堂秘笈";
-      document.getElementById('editing-lesson-index').value = "-1";
+      document.getElementById('editing-lesson-id').value = "";
       document.getElementById('input-lesson-title').value = '';
       document.getElementById('input-lesson-tech').value = '';
       document.getElementById('input-lesson-before').value = '';
@@ -880,14 +899,13 @@
       document.getElementById('lesson-modal').style.display = 'flex';
     }
 
-    // 開啟編輯寫作秘笈彈窗
-    function openEditLessonModal(index, event) {
+    function openEditLessonModal(key, event) {
       if (event) event.stopPropagation();
-      const item = appData.lessons[currentGrade][index];
+      const item = currentLessons[key];
       if (!item) return;
 
       document.getElementById('lesson-modal-title').innerText = "✏️ 編輯寫作課堂秘笈";
-      document.getElementById('editing-lesson-index').value = index;
+      document.getElementById('editing-lesson-id').value = key;
       document.getElementById('input-lesson-title').value = item.title;
       document.getElementById('input-lesson-tech').value = item.tech;
       document.getElementById('input-lesson-before').value = item.before;
@@ -895,44 +913,42 @@
       document.getElementById('lesson-modal').style.display = 'flex';
     }
 
-    // 刪除課堂
-    function deleteLesson(index) {
+    function deleteLesson(key) {
       if (confirm("確定要刪除這堂寫作秘笈嗎？")) {
-        appData.lessons[currentGrade].splice(index, 1);
-        persistData();
-        renderLessons();
+        window.dbRemove(window.dbRef(window.db, `lessons/${currentGrade}/${key}`));
       }
     }
 
-    // 渲染學生作品
+    // 渲染學生投稿
     function renderPosts() {
       const container = document.getElementById('posts-container');
       const pendingContainer = document.getElementById('pending-posts-container');
       
-      const approvedList = appData.approvedPosts[currentGrade] || [];
-      const pendingList = appData.pendingPosts[currentGrade] || [];
+      const approvedKeys = Object.keys(currentApprovedPosts);
+      const pendingKeys = Object.keys(currentPendingPosts);
 
-      // 1. 渲染待審核區 (僅教師)
       if (isTeacherMode) {
-        document.getElementById('pending-count').innerText = pendingList.length;
-        if (pendingList.length === 0) {
+        document.getElementById('pending-count').innerText = pendingKeys.length;
+        if (pendingKeys.length === 0) {
           pendingContainer.innerHTML = `<div class="empty-card" style="padding: 20px;">🎉 目前沒有等待審核的學生投稿。</div>`;
         } else {
-          pendingContainer.innerHTML = pendingList.map((item, index) => `
-            <div class="post-card pending-card">
-              <div class="card-actions">
-                <button class="btn-pass" onclick="approvePost(${index})">✅ 通過</button>
-                <button class="btn-reject" onclick="rejectPost(${index})">❌ 拒絕</button>
+          pendingContainer.innerHTML = pendingKeys.map((key) => {
+            const item = currentPendingPosts[key];
+            return `
+              <div class="post-card pending-card">
+                <div class="card-actions">
+                  <button class="btn-pass" onclick="approvePost('${key}')">✅ 通過</button>
+                  <button class="btn-reject" onclick="rejectPost('${key}')">❌ 拒絕</button>
+                </div>
+                <h3>${item.title} <small style="font-size:0.9rem; color:#d84315;">[${item.type}] - ${item.name} 同學 (待審核)</small></h3>
+                <p style="font-size:1.15rem; line-height:1.6; color:#311b92;">${item.content}</p>
               </div>
-              <h3>${item.title} <small style="font-size:0.9rem; color:#d84315;">[${item.type}] - ${item.name} 同學 (待審核)</small></h3>
-              <p style="font-size:1.15rem; line-height:1.6; color:#311b92;">${item.content}</p>
-            </div>
-          `).join('');
+            `;
+          }).join('');
         }
       }
 
-      // 2. 渲染已通過公開作品區
-      if (approvedList.length === 0) {
+      if (approvedKeys.length === 0) {
         container.innerHTML = `
           <div class="empty-card">
             🌟 這裡還沒有同學公開分享的作品喔！<br>點擊右上角「我要投稿分享」提交你的佳作吧！（投稿後需經老師審核）
@@ -941,45 +957,41 @@
         return;
       }
 
-      container.innerHTML = approvedList.map((item, index) => `
-        <div class="post-card">
-          ${isTeacherMode ? `<div class="card-actions"><button class="delete-btn" onclick="deleteApprovedPost(${index})">🗑️ 刪除</button></div>` : ''}
-          <h3>${item.title} <small style="font-size:0.9rem; color:#8e24aa;">[${item.type}] - ${item.name} 同學</small></h3>
-          <p style="font-size:1.15rem; line-height:1.6; color:#311b92;">${item.content}</p>
-        </div>
-      `).join('');
+      container.innerHTML = approvedKeys.map((key) => {
+        const item = currentApprovedPosts[key];
+        return `
+          <div class="post-card">
+            ${isTeacherMode ? `<div class="card-actions"><button class="delete-btn" onclick="deleteApprovedPost('${key}')">🗑️ 刪除</button></div>` : ''}
+            <h3>${item.title} <small style="font-size:0.9rem; color:#8e24aa;">[${item.type}] - ${item.name} 同學</small></h3>
+            <p style="font-size:1.15rem; line-height:1.6; color:#311b92;">${item.content}</p>
+          </div>
+        `;
+      }).join('');
     }
 
-    // 教師審核：通過投稿
-    function approvePost(index) {
-      const item = appData.pendingPosts[currentGrade].splice(index, 1)[0];
-      appData.approvedPosts[currentGrade].unshift(item);
-      persistData();
-      renderPosts();
+    function approvePost(key) {
+      const item = currentPendingPosts[key];
+      if (!item) return;
+      // 將作品寫入 approvedPosts 並刪除 pendingPosts 中的資料
+      window.dbPush(window.dbRef(window.db, `approvedPosts/${currentGrade}`), item);
+      window.dbRemove(window.dbRef(window.db, `pendingPosts/${currentGrade}/${key}`));
     }
 
-    // 教師審核：拒絕/刪除待審核投稿
-    function rejectPost(index) {
+    function rejectPost(key) {
       if (confirm("確定要拒絕並刪除這篇投稿嗎？")) {
-        appData.pendingPosts[currentGrade].splice(index, 1);
-        persistData();
-        renderPosts();
+        window.dbRemove(window.dbRef(window.db, `pendingPosts/${currentGrade}/${key}`));
       }
     }
 
-    // 刪除已通過作品
-    function deleteApprovedPost(index) {
+    function deleteApprovedPost(key) {
       if (confirm("確定要刪除這篇已發佈的作品嗎？")) {
-        appData.approvedPosts[currentGrade].splice(index, 1);
-        persistData();
-        renderPosts();
+        window.dbRemove(window.dbRef(window.db, `approvedPosts/${currentGrade}/${key}`));
       }
     }
 
-    // 儲存課堂
     function saveLesson(event) {
       if (event) event.stopPropagation();
-      const editIndex = parseInt(document.getElementById('editing-lesson-index').value, 10);
+      const key = document.getElementById('editing-lesson-id').value;
       const title = document.getElementById('input-lesson-title').value.trim();
       const tech = document.getElementById('input-lesson-tech').value.trim();
       const before = document.getElementById('input-lesson-before').value.trim();
@@ -992,28 +1004,15 @@
 
       const lessonObj = { title, tech, before, after };
 
-      if (!appData.lessons[currentGrade]) {
-        appData.lessons[currentGrade] = [];
-      }
-
-      if (editIndex >= 0) {
-        appData.lessons[currentGrade][editIndex] = lessonObj;
+      if (key) {
+        window.dbSet(window.dbRef(window.db, `lessons/${currentGrade}/${key}`), lessonObj);
       } else {
-        appData.lessons[currentGrade].push(lessonObj);
+        window.dbPush(window.dbRef(window.db, `lessons/${currentGrade}`), lessonObj);
       }
 
-      persistData(); // 永久保存至本地
       closeModal('lesson-modal');
-      renderLessons();
-
-      document.getElementById('editing-lesson-index').value = "-1";
-      document.getElementById('input-lesson-title').value = '';
-      document.getElementById('input-lesson-tech').value = '';
-      document.getElementById('input-lesson-before').value = '';
-      document.getElementById('input-lesson-after').value = '';
     }
 
-    // 學生提交投稿
     function saveStudentPost(event) {
       if (event) event.stopPropagation();
       const name = document.getElementById('input-student-name').value.trim();
@@ -1026,28 +1025,19 @@
         return;
       }
 
-      if (!appData.pendingPosts[currentGrade]) {
-        appData.pendingPosts[currentGrade] = [];
-      }
-
-      appData.pendingPosts[currentGrade].unshift({ name, type, title, content });
-      persistData(); // 永久保存至本地
+      window.dbPush(window.dbRef(window.db, `pendingPosts/${currentGrade}`), { name, type, title, content });
       closeModal('submit-modal');
-      alert("投稿提交成功！已送交老師審核，審核通過後即會發佈顯示喔！");
-      renderPosts();
+      alert("投稿成功！已傳送至雲端，請等待老師審核發佈喔！");
 
       document.getElementById('input-student-name').value = '';
       document.getElementById('input-post-title').value = '';
       document.getElementById('input-post-content').value = '';
     }
 
-    // 彈窗控制
     function openSubmitModal(event) { if (event) event.stopPropagation(); document.getElementById('submit-modal').style.display = 'flex'; }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-    // 初始化頁面
     window.onload = function() {
-      loadStorageData(); // 啟動時先讀取數據
       initCalendarAndDailyWord();
     };
   </script>
