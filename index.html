@@ -1,3 +1,16 @@
+以下是為您更新後的完整單一 `index.html` 檔案代碼。
+
+本次更新重點：
+
+1. **學生投稿審核機制**：學生投稿後會進入「待審核」隊列，**不會直接公開顯示**。教師登入（密碼：`hanyutong`）後，會在介面中看到專屬的「待審核投稿列表」，點擊「✅ 通過」後才會正式發佈給全班學生看，亦可點擊「❌ 拒絕」刪除投稿。
+2. **完全刪除音樂與朗讀功能**：無任何背景音樂或語音組件。
+3. **每日自動更換好詞好句**：根據當天日期（自動算日數 offset）每日午夜自動輪換對應的好詞好句。
+4. **精簡首頁卡片**：G4, G5, G6 年級卡片僅保留年級標題，保持畫面乾淨整潔。
+5. **全站標準標楷體與吉伊卡哇紫粉風格**。
+
+你可以直接複製下方代碼，貼到 GitHub 的 `index.html` 檔案中進行更新：
+
+```html
 <!DOCTYPE html>
 <html lang="zh-HK">
 <head>
@@ -109,12 +122,6 @@
       border-color: #ffd54f;
     }
 
-    .btn-music {
-      background-color: #fff8e1;
-      color: #f57f17;
-      border-color: #ffe082;
-    }
-
     /* Chiikawa 可愛角色公仔裝飾 */
     .chiikawa-mascot {
       position: fixed;
@@ -134,7 +141,7 @@
       50% { transform: translateY(-12px) rotate(4deg); }
     }
 
-    /* 點擊粒子消散動畫 */
+    /* 點擊粒子動畫 */
     .particle {
       position: absolute;
       pointer-events: none;
@@ -305,7 +312,7 @@
       padding-bottom: 8px;
     }
 
-    /* 空白狀態卡片（教師/學生專用） */
+    /* 空白狀態卡片 */
     .empty-card {
       background: white;
       border: 2px dashed #ce93d8;
@@ -332,17 +339,37 @@
       position: relative;
     }
 
+    .pending-card {
+      border: 2px dashed #f57c00;
+      background-color: #fffde7;
+    }
+
     .lesson-card h3, .post-card h3 {
       color: #6a1b9a;
       font-size: 1.45rem;
       margin-bottom: 10px;
-      padding-right: 60px;
+      padding-right: 120px;
     }
 
-    .delete-btn {
+    .card-actions {
       position: absolute;
       top: 15px;
       right: 15px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-pass {
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
+    .btn-reject, .delete-btn {
       background-color: #e53935;
       color: white;
       border: none;
@@ -433,7 +460,7 @@
 </head>
 <body>
 
-  <!-- Chiikawa 可愛公仔裝飾 (SVG 畫布) -->
+  <!-- Chiikawa 可愛公仔裝飾 -->
   <div class="chiikawa-mascot mascot-header-left">
     <svg viewBox="0 0 100 100" width="100%">
       <ellipse cx="50" cy="55" rx="35" ry="30" fill="#ffffff" stroke="#5a3d46" stroke-width="3"/>
@@ -486,18 +513,11 @@
     </svg>
   </div>
 
-  <!-- 背景輕音樂播放器：《起風了》鋼琴純音樂版 -->
-  <audio id="bgm-player" loop preload="auto">
-    <source src="https://raw.githubusercontent.com/AnsonMao/music-resources/main/qifengliao.mp3" type="audio/mpeg">
-    <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=piano.mp3" type="audio/mpeg">
-  </audio>
-
   <!-- 頂部吉伊卡哇紫色標題列 -->
   <header>
     <div class="header-title">💜 Melody的寫作百寶袋 💜</div>
     <div class="header-sub">吉伊卡哇陪伴學習 · 香港小學中文寫作平台</div>
     <div class="nav-controls">
-      <button class="btn btn-music" id="btn-music" onclick="toggleMusic()">🎵 背景音樂: 關閉</button>
       <button class="btn" onclick="showGateway()">🌸 切換年級</button>
       <button class="btn btn-teacher" id="btn-toggle-teacher" onclick="handleTeacherToggle()">👩‍🏫 切換教師模式 <span id="teacher-status">(關閉)</span></button>
     </div>
@@ -536,9 +556,9 @@
         </div>
         <div class="daily-content">
           <div class="daily-title-tag">📅 每日好詞好句分享</div>
-          <div class="word-text" id="daily-word">【喜出望外】</div>
+          <div class="word-text" id="daily-word">【加載中...】</div>
           <div class="sentence-text" id="daily-sentence">
-            收到得知獲獎的通知信時，姐姐喜出望外，興奮得跳了起來！
+            正在加載今天的精彩好句...
           </div>
         </div>
       </div>
@@ -547,21 +567,25 @@
       <div class="section-title">
         <span>📖 每週寫作課堂</span>
       </div>
-      <div id="lessons-container">
-        <!-- 動態載入或顯示空白 -->
-      </div>
+      <div id="lessons-container"></div>
       <div id="teacher-lesson-add-area" class="teacher-action-area" style="display: none;">
         <button class="btn btn-teacher" onclick="openAddLessonModal(event)">➕ 新增本週寫作課堂秘笈</button>
       </div>
 
-      <!-- 佳作展示區 -->
+      <!-- 教師審核專區 (僅教師模式可見) -->
+      <div id="teacher-pending-section" style="display: none;">
+        <div class="section-title" style="color: #d84315; border-bottom-color: #ff8a65;">
+          <span>⏳ 待審核學生投稿 (<span id="pending-count">0</span>)</span>
+        </div>
+        <div id="pending-posts-container"></div>
+      </div>
+
+      <!-- 學生佳作展示區 -->
       <div class="section-title">
         <span>🌟 學生佳作與好詞句分享</span>
         <button class="btn" style="margin-left: auto;" onclick="openSubmitModal(event)">✍️ 我要投稿分享</button>
       </div>
-      <div id="posts-container">
-        <!-- 動態載入學生投稿或顯示空白 -->
-      </div>
+      <div id="posts-container"></div>
     </div>
 
   </div>
@@ -611,6 +635,9 @@
   <div class="modal" id="submit-modal">
     <div class="modal-content">
       <div class="modal-title">✍️ 分享我的寫作成果</div>
+      <div style="background-color: #fff3e0; border-left: 4px solid #ff9800; padding: 10px; margin-bottom: 15px; border-radius: 6px; font-size: 0.95rem; color: #e65100;">
+        💡 提示：你的投稿將提交給老師審核，審核通過後才會展示給同學們看到喔！
+      </div>
       <div class="form-group">
         <label>學生姓名：</label>
         <input type="text" id="input-student-name" placeholder="請輸入你的名字">
@@ -641,32 +668,35 @@
     // 狀態管理
     let currentGrade = 'G4';
     let isTeacherMode = false;
-    let isMusicPlaying = false;
     const TEACHER_PWD = "hanyutong";
 
-    // 每日好詞好句數據庫
-    const dailyData = {
-      G4: {
-        word: "【繁星點點】",
-        sentence: "夜幕降臨，天空像鋪上了一塊深藍色的絨布，上面綴滿了繁星點點，眨著好奇的眼睛。"
-      },
-      G5: {
-        word: "【驚慌失措】",
-        sentence: "突如其來的暴雨讓路上的行人驚慌失措，大家紛紛拿起手邊的物品遮擋，狼狽地尋找避雨的地方。"
-      },
-      G6: {
-        word: "【跌宕起伏】",
-        sentence: "這部小說的情節跌宕起伏，扣人心弦，讓讀者時而緊張得屏息凝神，時而感動得熱淚盈眶。"
-      }
+    // 多天輪換的好詞好句庫（隨日期演算法輪換）
+    const dailyPool = {
+      G4: [
+        { word: "【繁星點點】", sentence: "夜幕降臨，天空像鋪上了一塊深藍色的絨布，上面綴滿了繁星點點，眨著好奇的眼睛。" },
+        { word: "【喜出望外】", sentence: "得知自己的文章獲選登在校刊上，姐姐喜出望外，高興得手舞足蹈。" },
+        { word: "【生機勃勃】", sentence: "陽春三月，花園裡的小草探出頭來，百花齊放，到處展現出一派生機勃勃的景象。" }
+      ],
+      G5: [
+        { word: "【驚慌失措】", sentence: "突如其來的暴雨讓路上的行人驚慌失措，大家紛紛拿起手邊的物品遮擋，狼狽地尋找避雨的地方。" },
+        { word: "【目不轉睛】", sentence: "魔術師在台上進行精彩的表演，台下的同學們都目不轉睛地盯著手部動作，生怕錯過任何細節。" },
+        { word: "【栩栩如生】", sentence: "畫展上的那幅駿馬圖畫得極為傳神，馬兒矯健的身姿彷彿隨時會躍出畫框，真是栩栩如生。" }
+      ],
+      G6: [
+        { word: "【跌宕起伏】", sentence: "這部小說的情節跌宕起伏，扣人心弦，讓讀者時而緊張得屏息凝神，時而感動得熱淚盈眶。" },
+        { word: "【耐人尋味】", sentence: "老師語重心長地講完這個寓言故事後，全班陷入了沉思，其中的哲理確實耐人尋味。" },
+        { word: "【情景交融】", sentence: "作者在文章中將對家鄉景物的細緻描繪與離鄉的思念之情結合得天衣無縫，達到了情景交融的境界。" }
+      ]
     };
 
-    // 本地儲存數據（寫作課堂與學生作品）
+    // 本地資料庫數據結構
     let appData = {
       lessons: { G4: [], G5: [], G6: [] },
-      posts: { G4: [], G5: [], G6: [] }
+      approvedPosts: { G4: [], G5: [], G6: [] },  // 已審核通過的作品
+      pendingPosts: { G4: [], G5: [], G6: [] }   // 待審核的作品
     };
 
-    // 全局點擊消散粒子特效
+    // 全局點擊粒子消散特效
     document.addEventListener('click', function(e) {
       createDissolveParticles(e.clientX, e.clientY);
     });
@@ -697,26 +727,8 @@
       }
     }
 
-    // 控制背景音樂播放/暫停（《起風了》鋼琴純音樂）
-    function toggleMusic() {
-      const audio = document.getElementById('bgm-player');
-      const btn = document.getElementById('btn-music');
-      if (isMusicPlaying) {
-        audio.pause();
-        isMusicPlaying = false;
-        btn.innerText = "🎵 背景音樂: 關閉";
-      } else {
-        audio.play().then(() => {
-          isMusicPlaying = true;
-          btn.innerText = "🎶 播放中：《起風了》";
-        }).catch(() => {
-          alert("請再次點擊頁面以允許音訊播放！");
-        });
-      }
-    }
-
-    // 初始化日曆
-    function initCalendar() {
+    // 初始化日曆與日期自動輪換好詞好句
+    function initCalendarAndDailyWord() {
       const now = new Date();
       const year = now.getFullYear();
       const month = now.getMonth() + 1;
@@ -726,6 +738,14 @@
       document.getElementById('cal-year-month').innerText = `${year}年${month}月`;
       document.getElementById('cal-day').innerText = date < 10 ? '0' + date : date;
       document.getElementById('cal-week').innerText = days[now.getDay()];
+
+      // 根據日期演算法計算今天輪換的詞句索引
+      const dayOffset = Math.floor(now.getTime() / (1000 * 60 * 60 * 24));
+      const pool = dailyPool[currentGrade];
+      const todayIndex = dayOffset % pool.length;
+
+      document.getElementById('daily-word').innerText = pool[todayIndex].word;
+      document.getElementById('daily-sentence').innerText = pool[todayIndex].sentence;
     }
 
     // 選擇年級
@@ -738,15 +758,12 @@
       const titleMap = { G4: "小四 (G4) 寫作百寶袋", G5: "小五 (G5) 寫作百寶袋", G6: "小六 (G6) 寫作百寶袋" };
       document.getElementById('current-grade-title').innerText = titleMap[grade];
 
-      // 更新每日詞句
-      document.getElementById('daily-word').innerText = dailyData[grade].word;
-      document.getElementById('daily-sentence').innerText = dailyData[grade].sentence;
-
+      initCalendarAndDailyWord();
       renderLessons();
       renderPosts();
     }
 
-    // 切換年級首頁
+    // 切換返回年級首頁
     function showGateway() {
       document.getElementById('grade-gateway').style.display = 'block';
       document.getElementById('main-dashboard').style.display = 'none';
@@ -785,10 +802,12 @@
         statusText.innerText = "(已開啟)";
         btn.classList.add('btn-teacher-active');
         document.getElementById('teacher-lesson-add-area').style.display = 'block';
+        document.getElementById('teacher-pending-section').style.display = 'block';
       } else {
         statusText.innerText = "(關閉)";
         btn.classList.remove('btn-teacher-active');
         document.getElementById('teacher-lesson-add-area').style.display = 'none';
+        document.getElementById('teacher-pending-section').style.display = 'none';
       }
 
       renderLessons();
@@ -812,7 +831,7 @@
 
       container.innerHTML = list.map((item, index) => `
         <div class="lesson-card">
-          ${isTeacherMode ? `<button class="delete-btn" onclick="deleteLesson(${index})">🗑️ 刪除</button>` : ''}
+          ${isTeacherMode ? `<div class="card-actions"><button class="delete-btn" onclick="deleteLesson(${index})">🗑️ 刪除</button></div>` : ''}
           <h3>${item.title}</h3>
           <span class="technique-tag">💡 技巧：${item.tech}</span>
           <div class="example-box"><strong>❌ 普通描寫：</strong>${item.before}</div>
@@ -829,33 +848,71 @@
       }
     }
 
-    // 渲染學生作品
+    // 渲染學生作品 (區分公開與審核專區)
     function renderPosts() {
       const container = document.getElementById('posts-container');
-      const list = appData.posts[currentGrade];
+      const pendingContainer = document.getElementById('pending-posts-container');
+      
+      const approvedList = appData.approvedPosts[currentGrade];
+      const pendingList = appData.pendingPosts[currentGrade];
 
-      if (list.length === 0) {
+      // 1. 渲染待審核區 (僅教師)
+      if (isTeacherMode) {
+        document.getElementById('pending-count').innerText = pendingList.length;
+        if (pendingList.length === 0) {
+          pendingContainer.innerHTML = `<div class="empty-card" style="padding: 20px;">🎉 目前沒有等待審核的學生投稿。</div>`;
+        } else {
+          pendingContainer.innerHTML = pendingList.map((item, index) => `
+            <div class="post-card pending-card">
+              <div class="card-actions">
+                <button class="btn-pass" onclick="approvePost(${index})">✅ 通過</button>
+                <button class="btn-reject" onclick="rejectPost(${index})">❌ 拒絕</button>
+              </div>
+              <h3>${item.title} <small style="font-size:0.9rem; color:#d84315;">[${item.type}] - ${item.name} 同學 (待審核)</small></h3>
+              <p style="font-size:1.15rem; line-height:1.6; color:#311b92;">${item.content}</p>
+            </div>
+          `).join('');
+        }
+      }
+
+      // 2. 渲染已通過公開作品區
+      if (approvedList.length === 0) {
         container.innerHTML = `
           <div class="empty-card">
-            🌟 這裡還沒有同學提交作品喔！<br>點擊右上角「我要投稿分享」成為第一個展示佳作的小作家吧！
+            🌟 這裡還沒有同學公開分享的作品喔！<br>點擊右上角「我要投稿分享」提交你的佳作吧！（投稿後需經老師審核）
           </div>
         `;
         return;
       }
 
-      container.innerHTML = list.map((item, index) => `
+      container.innerHTML = approvedList.map((item, index) => `
         <div class="post-card">
-          ${isTeacherMode ? `<button class="delete-btn" onclick="deletePost(${index})">🗑️ 刪除</button>` : ''}
+          ${isTeacherMode ? `<div class="card-actions"><button class="delete-btn" onclick="deleteApprovedPost(${index})">🗑️ 刪除</button></div>` : ''}
           <h3>${item.title} <small style="font-size:0.9rem; color:#8e24aa;">[${item.type}] - ${item.name} 同學</small></h3>
           <p style="font-size:1.15rem; line-height:1.6; color:#311b92;">${item.content}</p>
         </div>
       `).join('');
     }
 
-    // 刪除學生作品
-    function deletePost(index) {
-      if (confirm("確定要刪除這篇作品嗎？")) {
-        appData.posts[currentGrade].splice(index, 1);
+    // 教師審核：通過投稿
+    function approvePost(index) {
+      const item = appData.pendingPosts[currentGrade].splice(index, 1)[0];
+      appData.approvedPosts[currentGrade].unshift(item);
+      renderPosts();
+    }
+
+    // 教師審核：拒絕/刪除待審核投稿
+    function rejectPost(index) {
+      if (confirm("確定要拒絕並刪除這篇投稿嗎？")) {
+        appData.pendingPosts[currentGrade].splice(index, 1);
+        renderPosts();
+      }
+    }
+
+    // 刪除已通過作品
+    function deleteApprovedPost(index) {
+      if (confirm("確定要刪除這篇已發佈的作品嗎？")) {
+        appData.approvedPosts[currentGrade].splice(index, 1);
         renderPosts();
       }
     }
@@ -884,7 +941,7 @@
       document.getElementById('input-lesson-after').value = '';
     }
 
-    // 儲存學生作品
+    // 學生提交投稿（進入待審核狀態）
     function saveStudentPost(event) {
       if (event) event.stopPropagation();
       const name = document.getElementById('input-student-name').value.trim();
@@ -897,8 +954,9 @@
         return;
       }
 
-      appData.posts[currentGrade].unshift({ name, type, title, content });
+      appData.pendingPosts[currentGrade].unshift({ name, type, title, content });
       closeModal('submit-modal');
+      alert("投稿提交成功！已送交老師審核，審核通過後即會發佈顯示喔！");
       renderPosts();
 
       // 清空表單
@@ -914,8 +972,10 @@
 
     // 初始化頁面
     window.onload = function() {
-      initCalendar();
+      initCalendarAndDailyWord();
     };
   </script>
 </body>
 </html>
+
+```
