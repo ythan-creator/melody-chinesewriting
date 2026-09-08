@@ -109,20 +109,6 @@
       border-color: #ffd54f;
     }
 
-    .btn-edit {
-      background-color: #ff9800;
-      color: white;
-      border: none;
-      padding: 5px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 0.95rem;
-      transition: background-color 0.2s;
-    }
-    .btn-edit:hover {
-      background-color: #f57c00;
-    }
-
     /* Chiikawa 可愛角色公仔裝飾 */
     .chiikawa-mascot {
       position: fixed;
@@ -360,6 +346,16 @@
       gap: 8px;
     }
 
+    .btn-edit {
+      background-color: #f57c00;
+      color: white;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
     .btn-pass {
       background-color: #4caf50;
       color: white;
@@ -526,7 +522,7 @@
 
   <div class="container">
     
-    <!-- 1. 年級選擇首頁 Gateway -->
+    <!-- 1. 年級選擇首頁 -->
     <div id="grade-gateway">
       <div class="gateway-title">✨ 請選擇你的年級，開啟寫作百寶袋 ✨</div>
       <div class="grade-cards-grid">
@@ -552,8 +548,8 @@
       <div class="calendar-card">
         <div class="date-box">
           <div class="year-month" id="cal-year-month">2026年9月</div>
-          <div class="day-num" id="cal-day">08</div>
-          <div class="week-day" id="cal-week">星期二</div>
+          <div class="day-num" id="cal-day">06</div>
+          <div class="week-day" id="cal-week">星期日</div>
         </div>
         <div class="daily-content">
           <div class="daily-title-tag">📅 每日好詞好句分享</div>
@@ -609,7 +605,7 @@
   <div class="modal" id="lesson-modal">
     <div class="modal-content">
       <div class="modal-title" id="lesson-modal-title">👩‍🏫 發佈寫作課堂秘笈</div>
-      <input type="hidden" id="edit-lesson-index" value="-1">
+      <input type="hidden" id="editing-lesson-index" value="-1">
       <div class="form-group">
         <label>課堂主題：</label>
         <input type="text" id="input-lesson-title" placeholder="例如：如何把人物寫得栩栩如生">
@@ -628,7 +624,7 @@
       </div>
       <div class="modal-btns">
         <button class="btn" onclick="closeModal('lesson-modal')">取消</button>
-        <button class="btn btn-teacher" onclick="saveLesson(event)">保存秘笈</button>
+        <button class="btn btn-teacher" onclick="saveLesson(event)">儲存課堂</button>
       </div>
     </div>
   </div>
@@ -847,11 +843,11 @@
       `).join('');
     }
 
-    // 開啟新增課堂彈窗
+    // 開啟新增寫作秘笈彈窗
     function openAddLessonModal(event) {
       if (event) event.stopPropagation();
       document.getElementById('lesson-modal-title').innerText = "👩‍🏫 發佈寫作課堂秘笈";
-      document.getElementById('edit-lesson-index').value = "-1";
+      document.getElementById('editing-lesson-index').value = "-1";
       document.getElementById('input-lesson-title').value = '';
       document.getElementById('input-lesson-tech').value = '';
       document.getElementById('input-lesson-before').value = '';
@@ -859,45 +855,19 @@
       document.getElementById('lesson-modal').style.display = 'flex';
     }
 
-    // 開啟編輯課堂彈窗
+    // 開啟編輯寫作秘笈彈窗
     function openEditLessonModal(index, event) {
       if (event) event.stopPropagation();
-      const lesson = appData.lessons[currentGrade][index];
+      const item = appData.lessons[currentGrade][index];
+      if (!item) return;
+
       document.getElementById('lesson-modal-title').innerText = "✏️ 編輯寫作課堂秘笈";
-      document.getElementById('edit-lesson-index').value = index;
-      document.getElementById('input-lesson-title').value = lesson.title || '';
-      document.getElementById('input-lesson-tech').value = lesson.tech || '';
-      document.getElementById('input-lesson-before').value = lesson.before || '';
-      document.getElementById('input-lesson-after').value = lesson.after || '';
+      document.getElementById('editing-lesson-index').value = index;
+      document.getElementById('input-lesson-title').value = item.title;
+      document.getElementById('input-lesson-tech').value = item.tech;
+      document.getElementById('input-lesson-before').value = item.before;
+      document.getElementById('input-lesson-after').value = item.after;
       document.getElementById('lesson-modal').style.display = 'flex';
-    }
-
-    // 保存課堂 (新增或修改)
-    function saveLesson(event) {
-      if (event) event.stopPropagation();
-      const editIndex = parseInt(document.getElementById('edit-lesson-index').value);
-      const title = document.getElementById('input-lesson-title').value.trim();
-      const tech = document.getElementById('input-lesson-tech').value.trim();
-      const before = document.getElementById('input-lesson-before').value.trim();
-      const after = document.getElementById('input-lesson-after').value.trim();
-
-      if (!title || !after) {
-        alert("請輸入課堂標題與升級好句！");
-        return;
-      }
-
-      const lessonData = { title, tech, before, after };
-
-      if (editIndex >= 0) {
-        // 編輯模式：更新原資料
-        appData.lessons[currentGrade][editIndex] = lessonData;
-      } else {
-        // 新增模式：推入新資料
-        appData.lessons[currentGrade].push(lessonData);
-      }
-
-      closeModal('lesson-modal');
-      renderLessons();
     }
 
     // 刪除課堂
@@ -975,6 +945,41 @@
         appData.approvedPosts[currentGrade].splice(index, 1);
         renderPosts();
       }
+    }
+
+    // 儲存課堂 (新增與編輯兼容)
+    function saveLesson(event) {
+      if (event) event.stopPropagation();
+      const editIndex = parseInt(document.getElementById('editing-lesson-index').value, 10);
+      const title = document.getElementById('input-lesson-title').value.trim();
+      const tech = document.getElementById('input-lesson-tech').value.trim();
+      const before = document.getElementById('input-lesson-before').value.trim();
+      const after = document.getElementById('input-lesson-after').value.trim();
+
+      if (!title || !after) {
+        alert("請輸入課堂標題與升級好句！");
+        return;
+      }
+
+      const lessonObj = { title, tech, before, after };
+
+      if (editIndex >= 0) {
+        // 編輯更新已有課堂
+        appData.lessons[currentGrade][editIndex] = lessonObj;
+      } else {
+        // 新增課堂
+        appData.lessons[currentGrade].push(lessonObj);
+      }
+
+      closeModal('lesson-modal');
+      renderLessons();
+
+      // 清空表單
+      document.getElementById('editing-lesson-index').value = "-1";
+      document.getElementById('input-lesson-title').value = '';
+      document.getElementById('input-lesson-tech').value = '';
+      document.getElementById('input-lesson-before').value = '';
+      document.getElementById('input-lesson-after').value = '';
     }
 
     // 學生提交投稿（進入待審核狀態）
