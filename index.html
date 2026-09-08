@@ -667,6 +667,7 @@
     let currentGrade = 'G4';
     let isTeacherMode = false;
     const TEACHER_PWD = "hanyutong";
+    const STORAGE_KEY = "melody_writing_app_data_v1";
 
     // 多天輪換的好詞好句庫（隨日期演算法輪換）
     const dailyPool = {
@@ -687,12 +688,37 @@
       ]
     };
 
-    // 本地資料庫數據結構
+    // 預設數據結構
     let appData = {
       lessons: { G4: [], G5: [], G6: [] },
-      approvedPosts: { G4: [], G5: [], G6: [] },  // 已審核通過的作品
-      pendingPosts: { G4: [], G5: [], G6: [] }   // 待審核的作品
+      approvedPosts: { G4: [], G5: [], G6: [] },
+      pendingPosts: { G4: [], G5: [], G6: [] }
     };
+
+    // 從 localStorage 讀取數據
+    function loadStorageData() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          appData = JSON.parse(saved);
+          // 確保數據結構完整
+          if (!appData.lessons) appData.lessons = { G4: [], G5: [], G6: [] };
+          if (!appData.approvedPosts) appData.approvedPosts = { G4: [], G5: [], G6: [] };
+          if (!appData.pendingPosts) appData.pendingPosts = { G4: [], G5: [], G6: [] };
+        }
+      } catch (e) {
+        console.error("讀取本地數據失敗", e);
+      }
+    }
+
+    // 將數據寫入 localStorage 保存
+    function persistData() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+      } catch (e) {
+        console.error("保存本地數據失敗", e);
+      }
+    }
 
     // 全局點擊粒子消散特效
     document.addEventListener('click', function(e) {
@@ -737,7 +763,6 @@
       document.getElementById('cal-day').innerText = date < 10 ? '0' + date : date;
       document.getElementById('cal-week').innerText = days[now.getDay()];
 
-      // 根據日期演算法計算今天輪換的詞句索引
       const dayOffset = Math.floor(now.getTime() / (1000 * 60 * 60 * 24));
       const pool = dailyPool[currentGrade];
       const todayIndex = dayOffset % pool.length;
@@ -815,7 +840,7 @@
     // 渲染每週寫作課堂
     function renderLessons() {
       const container = document.getElementById('lessons-container');
-      const list = appData.lessons[currentGrade];
+      const list = appData.lessons[currentGrade] || [];
 
       if (list.length === 0) {
         container.innerHTML = `
@@ -874,17 +899,18 @@
     function deleteLesson(index) {
       if (confirm("確定要刪除這堂寫作秘笈嗎？")) {
         appData.lessons[currentGrade].splice(index, 1);
+        persistData();
         renderLessons();
       }
     }
 
-    // 渲染學生作品 (區分公開與審核專區)
+    // 渲染學生作品
     function renderPosts() {
       const container = document.getElementById('posts-container');
       const pendingContainer = document.getElementById('pending-posts-container');
       
-      const approvedList = appData.approvedPosts[currentGrade];
-      const pendingList = appData.pendingPosts[currentGrade];
+      const approvedList = appData.approvedPosts[currentGrade] || [];
+      const pendingList = appData.pendingPosts[currentGrade] || [];
 
       // 1. 渲染待審核區 (僅教師)
       if (isTeacherMode) {
@@ -928,6 +954,7 @@
     function approvePost(index) {
       const item = appData.pendingPosts[currentGrade].splice(index, 1)[0];
       appData.approvedPosts[currentGrade].unshift(item);
+      persistData();
       renderPosts();
     }
 
@@ -935,6 +962,7 @@
     function rejectPost(index) {
       if (confirm("確定要拒絕並刪除這篇投稿嗎？")) {
         appData.pendingPosts[currentGrade].splice(index, 1);
+        persistData();
         renderPosts();
       }
     }
@@ -943,11 +971,12 @@
     function deleteApprovedPost(index) {
       if (confirm("確定要刪除這篇已發佈的作品嗎？")) {
         appData.approvedPosts[currentGrade].splice(index, 1);
+        persistData();
         renderPosts();
       }
     }
 
-    // 儲存課堂 (新增與編輯兼容)
+    // 儲存課堂
     function saveLesson(event) {
       if (event) event.stopPropagation();
       const editIndex = parseInt(document.getElementById('editing-lesson-index').value, 10);
@@ -963,18 +992,20 @@
 
       const lessonObj = { title, tech, before, after };
 
+      if (!appData.lessons[currentGrade]) {
+        appData.lessons[currentGrade] = [];
+      }
+
       if (editIndex >= 0) {
-        // 編輯更新已有課堂
         appData.lessons[currentGrade][editIndex] = lessonObj;
       } else {
-        // 新增課堂
         appData.lessons[currentGrade].push(lessonObj);
       }
 
+      persistData(); // 永久保存至本地
       closeModal('lesson-modal');
       renderLessons();
 
-      // 清空表單
       document.getElementById('editing-lesson-index').value = "-1";
       document.getElementById('input-lesson-title').value = '';
       document.getElementById('input-lesson-tech').value = '';
@@ -982,7 +1013,7 @@
       document.getElementById('input-lesson-after').value = '';
     }
 
-    // 學生提交投稿（進入待審核狀態）
+    // 學生提交投稿
     function saveStudentPost(event) {
       if (event) event.stopPropagation();
       const name = document.getElementById('input-student-name').value.trim();
@@ -995,12 +1026,16 @@
         return;
       }
 
+      if (!appData.pendingPosts[currentGrade]) {
+        appData.pendingPosts[currentGrade] = [];
+      }
+
       appData.pendingPosts[currentGrade].unshift({ name, type, title, content });
+      persistData(); // 永久保存至本地
       closeModal('submit-modal');
       alert("投稿提交成功！已送交老師審核，審核通過後即會發佈顯示喔！");
       renderPosts();
 
-      // 清空表單
       document.getElementById('input-student-name').value = '';
       document.getElementById('input-post-title').value = '';
       document.getElementById('input-post-content').value = '';
@@ -1012,6 +1047,7 @@
 
     // 初始化頁面
     window.onload = function() {
+      loadStorageData(); // 啟動時先讀取數據
       initCalendarAndDailyWord();
     };
   </script>
