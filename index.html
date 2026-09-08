@@ -1,1450 +1,1014 @@
 <!DOCTYPE html>
 <html lang="zh-HK">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Melody的寫作百寶袋 - Chiikawa主題小學中文寫作平台</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        chiikawaPurpleLight: '#F3E8FF',
-                        chiikawaPurpleSoft: '#E9D5FF',
-                        chiikawaPurple: '#C084FC',
-                        chiikawaPurpleDeep: '#9333EA',
-                        chiikawaLavender: '#DDD6FE',
-                        chiikawaCream: '#FAF5FF',
-                        chiikawaYellow: '#FEF08A',
-                        chiikawaPink: '#FBCFE8'
-                    },
-                    borderRadius: {
-                        '4xl': '2rem',
-                        '5xl': '2.5rem',
-                    }
-                }
-            }
-        }
-    </script>
-    
-    <style>
-        * {
-            font-family: '標楷體', 'DFKai-SB', 'BiauKai', 'LXGW WenKai TC', 'KaiTi', serif !important;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Melody的寫作百寶袋 - 吉伊卡哇主題學習平台</title>
+  <!-- Google Fonts 楷體載入，確保各裝置顯示標準標楷體 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* 全站字體強制設置為標準標楷體 */
+    * {
+      font-family: "標楷體", "DFKai-SB", "BiauKai", "LXGW WenKai TC", "楷體", "KaiTi", serif !important;
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-        body {
-            background-color: #F3E8FF;
-            background-image: 
-                radial-gradient(#C084FC 1.2px, transparent 1.2px), 
-                radial-gradient(#E9D5FF 1.2px, #F3E8FF 1.2px);
-            background-size: 36px 36px;
-            background-position: 0 0, 18px 18px;
-        }
+    body {
+      background-color: #f3e5f5;
+      background-image: radial-gradient(#ce93d8 1.5px, transparent 1.5px), radial-gradient(#ce93d8 1.5px, #f3e5f5 1.5px);
+      background-size: 60px 60px;
+      background-position: 0 0, 30px 30px;
+      color: #4a148c;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 50px;
+      overflow-x: hidden;
+      position: relative;
+    }
 
-        @keyframes floatingMascot {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-8px) rotate(2deg); }
-        }
-        .animate-floating { animation: floatingMascot 3.5s ease-in-out infinite; }
+    /* 頂部 吉伊卡哇 薰衣草紫標題列 */
+    header {
+      background: linear-gradient(135deg, #e1bee7 0%, #ce93d8 50%, #b39ddb 100%);
+      padding: 25px 15px;
+      text-align: center;
+      border-bottom: 5px solid #ab47bc;
+      box-shadow: 0 4px 18px rgba(171, 71, 188, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
 
-        @keyframes pulseSparkle {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.6; transform: scale(1.15); }
-        }
-        .animate-sparkle { animation: pulseSparkle 2s ease-in-out infinite; }
+    .header-title {
+      font-size: 2.4rem;
+      color: #4a148c;
+      text-shadow: 2px 2px 0px #ffffff;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
 
-        .tab-btn.active {
-            background: linear-gradient(135deg, #A855F7 0%, #7E22CE 100%);
-            color: white !important;
-            box-shadow: 0 6px 18px rgba(168, 85, 247, 0.35);
-            transform: translateY(-2px);
-        }
+    .header-sub {
+      font-size: 1.15rem;
+      color: #6a1b9a;
+      background-color: rgba(255, 255, 255, 0.85);
+      display: inline-block;
+      padding: 4px 18px;
+      border-radius: 20px;
+      margin-top: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
 
-        .card-hover {
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .card-hover:hover {
-            transform: translateY(-6px) scale(1.01);
-            box-shadow: 0 14px 28px -6px rgba(168, 85, 247, 0.25);
-        }
+    .nav-controls {
+      margin-top: 15px;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
 
-        ::-webkit-scrollbar { width: 9px; }
-        ::-webkit-scrollbar-track { background: #F3E8FF; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb { background: #E9D5FF; border-radius: 10px; border: 2px solid #F3E8FF; }
-        ::-webkit-scrollbar-thumb:hover { background: #C084FC; }
+    .btn {
+      background-color: #ffffff;
+      color: #8e24aa;
+      border: 2px solid #ba68c8;
+      padding: 8px 20px;
+      border-radius: 25px;
+      font-size: 1.05rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+      position: relative;
+      overflow: hidden;
+    }
 
-        /* 特效粒子樣式 */
-        .click-particle {
-            position: fixed;
-            pointer-events: none;
-            z-index: 9999;
-            font-size: 18px;
-            animation: particleFade 1s forwards ease-out;
-        }
-        @keyframes particleFade {
-            0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-            100% { opacity: 0; transform: translate(-50%, -80px) scale(1.4); }
-        }
-    </style>
+    .btn:hover {
+      background-color: #ab47bc;
+      color: #ffffff;
+      transform: translateY(-2px);
+    }
+
+    .btn-teacher {
+      background-color: #7b1fa2;
+      color: white;
+      border-color: #9c27b0;
+    }
+    .btn-teacher:hover {
+      background-color: #9c27b0;
+      color: white;
+    }
+
+    .btn-teacher-active {
+      background-color: #4a148c;
+      color: #ffe0b2;
+      border-color: #ffd54f;
+    }
+
+    .btn-edit {
+      background-color: #ff9800;
+      color: white;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: background-color 0.2s;
+    }
+    .btn-edit:hover {
+      background-color: #f57c00;
+    }
+
+    /* Chiikawa 可愛角色公仔裝飾 */
+    .chiikawa-mascot {
+      position: fixed;
+      z-index: 99;
+      pointer-events: none;
+      filter: drop-shadow(0 5px 10px rgba(0,0,0,0.15));
+      animation: floatAnimation 4s ease-in-out infinite;
+    }
+
+    .mascot-1 { bottom: 20px; left: 20px; width: 100px; }
+    .mascot-2 { bottom: 20px; right: 20px; width: 100px; animation-delay: -2s; }
+    .mascot-header-left { top: 10px; left: 30px; width: 70px; animation-delay: -1s; }
+    .mascot-header-right { top: 10px; right: 30px; width: 70px; animation-delay: -3s; }
+
+    @keyframes floatAnimation {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-12px) rotate(4deg); }
+    }
+
+    /* 點擊粒子動畫 */
+    .particle {
+      position: absolute;
+      pointer-events: none;
+      border-radius: 50%;
+      animation: particleDissolve 0.7s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+      z-index: 9999;
+    }
+
+    @keyframes particleDissolve {
+      0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(var(--dx), var(--dy)) scale(0);
+      }
+    }
+
+    /* 容器 */
+    .container {
+      max-width: 950px;
+      margin: 25px auto;
+      padding: 0 15px;
+      width: 100%;
+    }
+
+    /* 1. 年級選擇首頁 Gateway */
+    #grade-gateway {
+      text-align: center;
+      padding: 50px 10px;
+    }
+
+    .gateway-title {
+      font-size: 2.2rem;
+      color: #6a1b9a;
+      margin-bottom: 35px;
+    }
+
+    .grade-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 30px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .grade-card {
+      background: white;
+      border: 4px solid #e1bee7;
+      border-radius: 25px;
+      padding: 40px 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 20px rgba(206, 147, 216, 0.35);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .grade-card:hover {
+      transform: translateY(-8px) scale(1.03);
+      border-color: #ab47bc;
+      box-shadow: 0 12px 25px rgba(171, 71, 188, 0.45);
+    }
+
+    .grade-badge {
+      font-size: 2.8rem;
+      color: #7b1fa2;
+      font-weight: bold;
+    }
+
+    /* 2. 主學習介面 */
+    #main-dashboard {
+      display: none;
+    }
+
+    .dashboard-header {
+      background-color: white;
+      border: 3px dashed #ba68c8;
+      border-radius: 18px;
+      padding: 14px 22px;
+      margin-bottom: 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .current-grade-tag {
+      font-size: 1.45rem;
+      color: #6a1b9a;
+      font-weight: bold;
+    }
+
+    /* 日曆板塊 */
+    .calendar-card {
+      background: white;
+      border: 3px solid #ce93d8;
+      border-radius: 20px;
+      padding: 22px;
+      margin-bottom: 30px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.04);
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .date-box {
+      background: linear-gradient(180deg, #ab47bc 0%, #7b1fa2 100%);
+      color: white;
+      border-radius: 16px;
+      padding: 15px 25px;
+      text-align: center;
+      min-width: 140px;
+      box-shadow: 0 4px 12px rgba(123, 31, 162, 0.3);
+    }
+
+    .date-box .year-month { font-size: 1rem; }
+    .date-box .day-num { font-size: 2.8rem; font-weight: bold; line-height: 1.1; }
+    .date-box .week-day { font-size: 1.2rem; margin-top: 5px; }
+
+    .daily-content {
+      flex: 1;
+      min-width: 280px;
+    }
+
+    .daily-title-tag {
+      display: inline-block;
+      background-color: #f3e5f5;
+      color: #7b1fa2;
+      padding: 4px 14px;
+      border-radius: 12px;
+      font-size: 1rem;
+      margin-bottom: 8px;
+      border: 1px solid #e1bee7;
+    }
+
+    .word-text {
+      font-size: 1.8rem;
+      color: #6a1b9a;
+      margin-bottom: 8px;
+    }
+
+    .sentence-text {
+      font-size: 1.2rem;
+      color: #311b92;
+      line-height: 1.6;
+      background: linear-gradient(90deg, #f3e5f5 0%, #ede7f6 100%);
+      padding: 14px;
+      border-radius: 12px;
+      border-left: 5px solid #8e24aa;
+    }
+
+    /* 區塊標題 */
+    .section-title {
+      font-size: 1.65rem;
+      color: #4a148c;
+      margin: 35px 0 15px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 2px solid #ce93d8;
+      padding-bottom: 8px;
+    }
+
+    /* 空白狀態卡片 */
+    .empty-card {
+      background: white;
+      border: 2px dashed #ce93d8;
+      border-radius: 16px;
+      padding: 40px 20px;
+      text-align: center;
+      color: #8e24aa;
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+
+    .teacher-action-area {
+      margin-top: 15px;
+    }
+
+    /* 課堂與作品卡片 */
+    .lesson-card, .post-card {
+      background: white;
+      border: 2px solid #e1bee7;
+      border-radius: 18px;
+      padding: 22px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      position: relative;
+    }
+
+    .pending-card {
+      border: 2px dashed #f57c00;
+      background-color: #fffde7;
+    }
+
+    .lesson-card h3, .post-card h3 {
+      color: #6a1b9a;
+      font-size: 1.45rem;
+      margin-bottom: 10px;
+      padding-right: 140px;
+    }
+
+    .card-actions {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-pass {
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
+    .btn-reject, .delete-btn {
+      background-color: #e53935;
+      color: white;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
+    .technique-tag {
+      display: inline-block;
+      background-color: #e1bee7;
+      color: #4a148c;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      margin-bottom: 10px;
+    }
+
+    .example-box {
+      background-color: #fff8e1;
+      border-left: 4px solid #ffa726;
+      padding: 12px 16px;
+      margin: 10px 0;
+      border-radius: 6px;
+      font-size: 1.1rem;
+    }
+
+    /* 彈窗 Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 22px;
+      padding: 25px;
+      width: 90%;
+      max-width: 550px;
+      border: 4px solid #ba68c8;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+    }
+
+    .modal-title {
+      font-size: 1.55rem;
+      color: #6a1b9a;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: #4a148c;
+      font-size: 1.1rem;
+    }
+
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid #e1bee7;
+      border-radius: 10px;
+      font-size: 1.05rem;
+      outline: none;
+    }
+
+    .form-group input:focus, .form-group textarea:focus {
+      border-color: #ab47bc;
+    }
+
+    .modal-btns {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+  </style>
 </head>
-<body class="text-slate-800 min-h-screen flex flex-col justify-between selection:bg-chiikawaPurpleSoft selection:text-chiikawaPurpleDeep" onclick="createParticleEffect(event)">
+<body>
 
-    <!-- 1. 門戶首頁 (Grade Gateway Landing) -->
-    <div id="landing-screen" class="fixed inset-0 z-50 bg-gradient-to-br from-chiikawaPurpleLight via-purple-100 to-chiikawaLavender flex items-center justify-center p-4 overflow-y-auto">
-        <div class="max-w-4xl w-full text-center space-y-6 md:space-y-8 my-auto py-6 relative">
-            
-            <!-- Landing 教師權限開關按鈕 -->
-            <div class="absolute top-0 right-0 flex items-center gap-2">
-                <button onclick="openTeacherAuthModal()" id="landing-teacher-btn" class="px-3.5 py-1.5 rounded-full bg-white/90 hover:bg-purple-600 hover:text-white text-purple-800 font-black text-xs transition-all border-2 border-purple-300 shadow-md flex items-center gap-1.5">
-                    <i class="fa-solid fa-user-shield"></i>
-                    <span id="landing-teacher-btn-text">👩‍🏫 教師模式</span>
-                </button>
-            </div>
+  <!-- Chiikawa 可愛公仔裝飾 -->
+  <div class="chiikawa-mascot mascot-header-left">
+    <svg viewBox="0 0 100 100" width="100%">
+      <ellipse cx="50" cy="55" rx="35" ry="30" fill="#ffffff" stroke="#5a3d46" stroke-width="3"/>
+      <ellipse cx="28" cy="28" rx="8" ry="12" fill="#ffffff" stroke="#5a3d46" stroke-width="3"/>
+      <ellipse cx="72" cy="28" rx="8" ry="12" fill="#ffffff" stroke="#5a3d46" stroke-width="3"/>
+      <circle cx="38" cy="52" r="3.5" fill="#5a3d46"/>
+      <circle cx="62" cy="52" r="3.5" fill="#5a3d46"/>
+      <ellipse cx="30" cy="60" rx="4" ry="2.5" fill="#ffb6c1"/>
+      <ellipse cx="70" cy="60" rx="4" ry="2.5" fill="#ffb6c1"/>
+      <path d="M 46 58 Q 50 62 54 58" fill="none" stroke="#5a3d46" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+  </div>
 
-            <!-- Chiikawa 主題 Mascot -->
-            <div class="relative mx-auto w-28 h-28 bg-gradient-to-tr from-purple-300 to-chiikawaPurpleDeep rounded-full flex items-center justify-center text-white shadow-xl border-4 border-white animate-floating">
-                <svg class="w-16 h-16 text-white drop-shadow-md" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-3 7c.83 0 1.5.67 1.5 1.5S9.83 12 9 12s-1.5-.67-1.5-1.5S8.17 9 9 9zm6 0c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5.67-1.5 1.5-1.5zm-3 8c-2.03 0-3.8-1.04-4.84-2.62.18-.02.36-.03.55-.03 1.93 0 3.68.79 4.95 2.07.12.12.23.25.34.38z"/>
-                </svg>
-                <div class="absolute -top-2 -right-1 bg-amber-300 text-purple-900 rounded-full w-8 h-8 flex items-center justify-center font-black text-xs shadow-md border-2 border-white animate-sparkle">
-                    ✨
-                </div>
-            </div>
+  <div class="chiikawa-mascot mascot-header-right">
+    <svg viewBox="0 0 100 100" width="100%">
+      <ellipse cx="50" cy="55" rx="35" ry="30" fill="#e3f2fd" stroke="#5a3d46" stroke-width="3"/>
+      <path d="M 22 28 Q 28 8 36 28 Z" fill="#e3f2fd" stroke="#5a3d46" stroke-width="3"/>
+      <path d="M 64 28 Q 72 8 78 28 Z" fill="#e3f2fd" stroke="#5a3d46" stroke-width="3"/>
+      <circle cx="38" cy="52" r="3.5" fill="#5a3d46"/>
+      <circle cx="62" cy="52" r="3.5" fill="#5a3d46"/>
+      <ellipse cx="30" cy="60" rx="4" ry="2.5" fill="#ffb6c1"/>
+      <ellipse cx="70" cy="60" rx="4" ry="2.5" fill="#ffb6c1"/>
+      <path d="M 46 59 Q 50 55 54 59" fill="none" stroke="#5a3d46" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+  </div>
 
-            <div class="space-y-2">
-                <span class="px-4 py-1.5 rounded-full bg-white/90 text-chiikawaPurpleDeep font-bold text-sm md:text-base border-2 border-purple-200 shadow-sm inline-block">
-                    💜 Melody的寫作百寶袋 · Chiikawa薰衣草魔法世界
-                </span>
-                <h1 class="font-black text-2xl md:text-4xl text-purple-700 tracking-wide">
-                    歡迎來到 Melody 的寫作百寶袋！
-                </h1>
-                <p class="text-slate-600 text-sm md:text-lg font-bold max-w-lg mx-auto">
-                    請點選你的年級，開啟寫作之旅吧 ✨
-                </p>
-            </div>
+  <div class="chiikawa-mascot mascot-1">
+    <svg viewBox="0 0 100 100" width="100%">
+      <ellipse cx="50" cy="58" rx="38" ry="32" fill="#ffffff" stroke="#5a3d46" stroke-width="3"/>
+      <ellipse cx="25" cy="30" rx="9" ry="14" fill="#ffffff" stroke="#5a3d46" stroke-width="3"/>
+      <ellipse cx="75" cy="30" rx="9" ry="14" fill="#ffffff" stroke="#5a3d46" stroke-width="3"/>
+      <circle cx="36" cy="54" r="4" fill="#5a3d46"/>
+      <circle cx="64" cy="54" r="4" fill="#5a3d46"/>
+      <ellipse cx="28" cy="63" rx="5" ry="3" fill="#ffab91"/>
+      <ellipse cx="72" cy="63" rx="5" ry="3" fill="#ffab91"/>
+      <path d="M 45 61 Q 50 66 55 61" fill="none" stroke="#5a3d46" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+  </div>
 
-            <!-- 年級卡片：乾淨卡片僅包含標題 -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2 max-w-3xl mx-auto">
-                <div onclick="selectGradeFromLanding('G4')" class="bg-white rounded-5xl p-8 shadow-md hover:shadow-2xl border-4 border-purple-200 hover:border-purple-500 transition-all duration-300 transform hover:-translate-y-2 cursor-pointer flex flex-col justify-center items-center group">
-                    <div class="w-16 h-16 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center text-3xl font-black group-hover:bg-purple-600 group-hover:text-white transition-colors mb-4">
-                        🌸
-                    </div>
-                    <h3 class="font-black text-3xl text-slate-800 tracking-wider">G4 (小四)</h3>
-                </div>
+  <div class="chiikawa-mascot mascot-2">
+    <svg viewBox="0 0 100 100" width="100%">
+      <ellipse cx="50" cy="58" rx="38" ry="32" fill="#fff9c4" stroke="#5a3d46" stroke-width="3"/>
+      <ellipse cx="32" cy="20" rx="6" ry="18" fill="#fff9c4" stroke="#5a3d46" stroke-width="3"/>
+      <ellipse cx="68" cy="20" rx="6" ry="18" fill="#fff9c4" stroke="#5a3d46" stroke-width="3"/>
+      <circle cx="36" cy="54" r="4" fill="#5a3d46"/>
+      <circle cx="64" cy="54" r="4" fill="#5a3d46"/>
+      <ellipse cx="28" cy="63" rx="5" ry="3" fill="#ffab91"/>
+      <ellipse cx="72" cy="63" rx="5" ry="3" fill="#ffab91"/>
+      <path d="M 44 60 Q 50 67 56 60 Z" fill="#5a3d46"/>
+    </svg>
+  </div>
 
-                <div onclick="selectGradeFromLanding('G5')" class="bg-white rounded-5xl p-8 shadow-md hover:shadow-2xl border-4 border-purple-200 hover:border-purple-500 transition-all duration-300 transform hover:-translate-y-2 cursor-pointer flex flex-col justify-center items-center group">
-                    <div class="w-16 h-16 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center text-3xl font-black group-hover:bg-purple-600 group-hover:text-white transition-colors mb-4">
-                        🎀
-                    </div>
-                    <h3 class="font-black text-3xl text-slate-800 tracking-wider">G5 (小五)</h3>
-                </div>
+  <!-- 頂部吉伊卡哇紫色標題列 -->
+  <header>
+    <div class="header-title">💜 Melody的寫作百寶袋 💜</div>
+    <div class="header-sub">吉伊卡哇陪伴學習 · 香港小學中文寫作平台</div>
+    <div class="nav-controls">
+      <button class="btn" onclick="showGateway()">🌸 切換年級</button>
+      <button class="btn btn-teacher" id="btn-toggle-teacher" onclick="handleTeacherToggle()">👩‍🏫 切換教師模式 <span id="teacher-status">(關閉)</span></button>
+    </div>
+  </header>
 
-                <div onclick="selectGradeFromLanding('G6')" class="bg-white rounded-5xl p-8 shadow-md hover:shadow-2xl border-4 border-purple-200 hover:border-purple-500 transition-all duration-300 transform hover:-translate-y-2 cursor-pointer flex flex-col justify-center items-center group">
-                    <div class="w-16 h-16 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center text-3xl font-black group-hover:bg-purple-600 group-hover:text-white transition-colors mb-4">
-                        🎓
-                    </div>
-                    <h3 class="font-black text-3xl text-slate-800 tracking-wider">G6 (小六)</h3>
-                </div>
-            </div>
+  <div class="container">
+    
+    <!-- 1. 年級選擇首頁 Gateway -->
+    <div id="grade-gateway">
+      <div class="gateway-title">✨ 請選擇你的年級，開啟寫作百寶袋 ✨</div>
+      <div class="grade-cards-grid">
+        <div class="grade-card" onclick="selectGrade('G4', event)">
+          <div class="grade-badge">G4 (小四)</div>
         </div>
+        <div class="grade-card" onclick="selectGrade('G5', event)">
+          <div class="grade-badge">G5 (小五)</div>
+        </div>
+        <div class="grade-card" onclick="selectGrade('G6', event)">
+          <div class="grade-badge">G6 (小六)</div>
+        </div>
+      </div>
     </div>
 
-    <!-- 2. 頂部導航欄 (Sticky Header) -->
-    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b-4 border-chiikawaLavender shadow-sm">
-        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-col md:flex-row items-center justify-between gap-3">
-            <div class="flex items-center gap-3">
-                <div class="relative w-12 h-12 bg-gradient-to-tr from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white shadow-md border-2 border-white transform hover:scale-105 transition-transform shrink-0 cursor-pointer" onclick="showLandingScreen()">
-                    <i class="fa-solid fa-wand-magic-sparkles text-xl"></i>
-                </div>
-                <div>
-                    <h1 class="font-black text-xl md:text-2xl text-purple-700 tracking-wide flex items-center gap-2">
-                        Melody的寫作百寶袋 <span class="text-xs font-bold px-3 py-0.5 rounded-full bg-purple-100 text-purple-800 border border-purple-200">💜 Chiikawa主題</span>
-                    </h1>
-                    <p class="text-xs text-slate-500 hidden sm:block">香港小學中文專用 · 每日好詞佳句 · 每週課堂 · 學生佳作</p>
-                </div>
-            </div>
+    <!-- 2. 主介面 Dashboard -->
+    <div id="main-dashboard">
+      <div class="dashboard-header">
+        <div class="current-grade-tag" id="current-grade-title">小四 (G4) 寫作百寶袋</div>
+      </div>
 
-            <div class="flex items-center gap-2 flex-wrap justify-center">
-                <!-- 年級顯示與切換 -->
-                <div class="flex items-center gap-2 bg-purple-50 px-3 py-1.5 rounded-3xl border-2 border-purple-200">
-                    <span id="current-grade-tag" class="text-xs md:text-sm font-black text-purple-800 flex items-center gap-1">
-                        <i class="fa-solid fa-graduation-cap"></i> 年級：<span id="header-grade-name" class="text-purple-600 font-black">G4 (小四)</span>
-                    </span>
-                    <button onclick="showLandingScreen()" class="ml-1 px-2.5 py-1 rounded-2xl bg-white hover:bg-purple-600 hover:text-white text-purple-700 text-xs font-bold transition-all border border-purple-300 shadow-sm flex items-center gap-1">
-                        <i class="fa-solid fa-arrows-rotate text-[10px]"></i>
-                        <span>切換</span>
-                    </button>
-                </div>
-
-                <!-- 教師權限按鈕 -->
-                <button onclick="openTeacherAuthModal()" id="header-teacher-btn" class="px-3.5 py-1.5 rounded-full bg-purple-100 hover:bg-purple-200 text-purple-800 font-black text-xs transition-all border-2 border-purple-300 shadow-sm flex items-center gap-1.5 shrink-0">
-                    <i class="fa-solid fa-user-shield"></i>
-                    <span id="header-teacher-btn-text">👩‍🏫 教師模式</span>
-                </button>
-            </div>
-
-            <!-- 主選單切換分頁 -->
-            <nav class="flex items-center gap-1.5 bg-purple-100 p-1.5 rounded-3xl border-2 border-purple-200 w-full md:w-auto justify-center">
-                <button onclick="switchTab('daily')" id="tab-daily" class="tab-btn active px-3.5 py-2 rounded-2xl text-xs md:text-sm font-bold transition-all duration-200 flex items-center gap-1 text-purple-800">
-                    <span>🍓</span><span>每日好詞佳句</span>
-                </button>
-                <button onclick="switchTab('classroom')" id="tab-classroom" class="tab-btn px-3.5 py-2 rounded-2xl text-xs md:text-sm font-bold transition-all duration-200 flex items-center gap-1 text-purple-800 hover:text-purple-950">
-                    <span>🎀</span><span>每週寫作課堂</span>
-                </button>
-                <button onclick="switchTab('share')" id="tab-share" class="tab-btn px-3.5 py-2 rounded-2xl text-xs md:text-sm font-bold transition-all duration-200 flex items-center gap-1 text-purple-800 hover:text-purple-950">
-                    <span>✨</span><span>佳作展示區</span>
-                </button>
-            </nav>
+      <!-- 每日好詞好句日曆 -->
+      <div class="calendar-card">
+        <div class="date-box">
+          <div class="year-month" id="cal-year-month">2026年9月</div>
+          <div class="day-num" id="cal-day">08</div>
+          <div class="week-day" id="cal-week">星期二</div>
         </div>
-    </header>
-
-    <!-- 3. 主內容區域 -->
-    <main class="max-w-6xl mx-auto px-4 py-6 w-full flex-grow space-y-6">
-
-        <!-- 年級提示橫幅 -->
-        <div class="bg-gradient-to-r from-purple-100 via-indigo-100 to-pink-100 rounded-5xl p-5 md:p-6 shadow-sm border-4 border-white flex flex-col sm:flex-row items-center justify-between gap-4 animate-floating">
-            <div class="space-y-1 text-center sm:text-left">
-                <div class="flex items-center justify-center sm:justify-start gap-2">
-                    <span id="grade-badge" class="bg-purple-600 text-white text-xs font-black px-3 py-0.5 rounded-full shadow-sm">當前年級：G4 (小四)</span>
-                    <span id="grade-target-tag" class="bg-white/80 text-purple-700 text-xs font-bold px-3 py-0.5 rounded-full border border-purple-200">重點：感官描寫 & 比喻擬人修辭</span>
-                </div>
-                <h2 id="grade-welcome-title" class="text-xl md:text-2xl font-black text-purple-800">歡迎來到 G4 小四寫作百寶袋！🌸</h2>
-                <p id="grade-welcome-desc" class="text-slate-600 text-xs md:text-sm">採摘適合小四水平的好詞佳句，跟 Melody 與 Chiikawa 一起快樂寫作文吧！</p>
-            </div>
-            <div class="shrink-0 flex items-center gap-2">
-                <span class="text-xs font-bold text-purple-700 bg-white/90 px-3 py-1.5 rounded-2xl border border-purple-200 shadow-sm">
-                    <i class="fa-solid fa-sparkles text-amber-400"></i> 香港小學中文課程對接
-                </span>
-            </div>
+        <div class="daily-content">
+          <div class="daily-title-tag">📅 每日好詞好句分享</div>
+          <div class="word-text" id="daily-word">【加載中...】</div>
+          <div class="sentence-text" id="daily-sentence">
+            正在加載今天的精彩好句...
+          </div>
         </div>
+      </div>
 
-        <!-- 區塊 1：每日好詞好句日曆 -->
-        <section id="section-daily" class="space-y-6">
-            <div class="bg-white/90 p-5 rounded-4xl border-4 border-purple-200 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 rounded-2xl bg-purple-600 text-white flex items-center justify-center text-xl font-black shadow-md shrink-0">
-                        <i class="fa-solid fa-calendar-check"></i>
-                    </div>
-                    <div>
-                        <div class="text-xs text-purple-600 font-bold">Melody 每日寫作好詞佳句寶庫</div>
-                        <div id="real-date-display" class="text-base md:text-lg font-black text-slate-800">
-                            加載今日日期中...
-                        </div>
-                    </div>
-                </div>
+      <!-- 每週寫作課堂 -->
+      <div class="section-title">
+        <span>📖 每週寫作課堂</span>
+      </div>
+      <div id="lessons-container"></div>
+      <div id="teacher-lesson-add-area" class="teacher-action-area" style="display: none;">
+        <button class="btn btn-teacher" onclick="openAddLessonModal(event)">➕ 新增本週寫作課堂秘笈</button>
+      </div>
 
-                <div class="flex items-center gap-2 flex-wrap">
-                    <button onclick="filterDaily('all')" id="btn-daily-all" class="filter-daily-btn bg-purple-600 text-white font-bold text-xs md:text-sm px-4 py-2 rounded-2xl shadow-sm">全部寶藏</button>
-                    <button onclick="filterDaily('words')" id="btn-daily-words" class="filter-daily-btn bg-white text-purple-700 hover:bg-purple-50 font-bold text-xs md:text-sm px-4 py-2 rounded-2xl border border-purple-200">✨ 精選好詞</button>
-                    <button onclick="filterDaily('sentences')" id="btn-daily-sentences" class="filter-daily-btn bg-white text-purple-700 hover:bg-purple-50 font-bold text-xs md:text-sm px-4 py-2 rounded-2xl border border-purple-200">🌸 優美佳句</button>
-                    <button onclick="openAiGeneratorModal()" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-black text-xs md:text-sm px-4 py-2 rounded-2xl shadow-md border-2 border-white flex items-center gap-1.5 transition-all transform hover:scale-105">
-                        <i class="fa-solid fa-wand-magic-sparkles text-amber-300 animate-pulse"></i>
-                        <span>✨ 抽取/搜尋新好詞佳句</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- 好詞好句動態卡片容器 -->
-            <div id="daily-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-        </section>
-
-        <!-- 區塊 2：每週寫作課堂 -->
-        <section id="section-classroom" class="space-y-6 hidden">
-            <div class="bg-white/90 p-4 rounded-3xl border-2 border-purple-200 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm">
-                <div class="flex items-center gap-2 text-purple-800 font-bold text-xs md:text-sm">
-                    <i class="fa-solid fa-chalkboard-user text-purple-600 text-lg"></i>
-                    <span id="classroom-mode-indicator">每週寫作課堂 — 學習寫作祕笈與優劣改寫對比</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button onclick="openTeacherAuthModal()" class="px-3.5 py-1.5 rounded-full bg-purple-100 hover:bg-purple-200 text-purple-800 font-black text-xs transition-all border border-purple-300 flex items-center gap-1.5 shrink-0">
-                        <i class="fa-solid fa-user-shield"></i>
-                        <span id="classroom-teacher-status">👩‍🏫 教師模式</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- 教師發佈課堂控制列 -->
-            <div id="teacher-control-panel" class="hidden bg-gradient-to-r from-purple-100 via-indigo-50 to-pink-50 p-5 rounded-4xl border-4 border-purple-300 space-y-4">
-                <div class="flex items-center justify-between">
-                    <h3 class="font-black text-purple-900 text-base flex items-center gap-2">
-                        <i class="fa-solid fa-pen-to-square text-purple-600"></i> 教師發佈/管理課堂模組
-                    </h3>
-                    <span class="text-xs bg-purple-200 text-purple-900 px-3 py-1 rounded-full font-bold">權限已開啟 (密碼: hanyutong)</span>
-                </div>
-                <button onclick="openAddLessonModal()" class="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs md:text-sm rounded-2xl shadow-md flex items-center justify-center gap-2 transition-all transform hover:scale-[1.01]">
-                    <i class="fa-solid fa-plus text-amber-300"></i>
-                    <span>➕ 新增每週寫作課堂秘笈</span>
-                </button>
-            </div>
-
-            <!-- 課堂清單 -->
-            <div id="classroom-container" class="space-y-4"></div>
-        </section>
-
-        <!-- 區塊 3：佳作展示區 -->
-        <section id="section-share" class="space-y-6 hidden">
-            <div class="bg-gradient-to-r from-purple-200 via-indigo-100 to-chiikawaYellow rounded-5xl p-6 shadow-sm border-4 border-white flex flex-col md:flex-row items-center justify-between gap-4">
-                <div class="space-y-1 text-center md:text-left">
-                    <span class="inline-flex items-center gap-1 bg-white/90 text-purple-800 font-bold text-xs px-3 py-0.5 rounded-full border border-purple-200">
-                        <i class="fa-solid fa-star text-amber-400"></i> 小小寫作家舞台
-                    </span>
-                    <h2 class="text-xl md:text-2xl font-black text-slate-800">同學們的夢幻寫作作品</h2>
-                    <p class="text-slate-700 text-xs md:text-sm">給喜歡的作品送個愛心，或者在下面寫鼓勵留言吧！(學生投稿經老師審核後展示)</p>
-                </div>
-                <button onclick="openPublishModal()" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-black text-sm px-6 py-3 rounded-3xl shadow-lg border-2 border-white flex items-center gap-2 hover:scale-105 transition-all">
-                    <i class="fa-solid fa-pen-nib text-base"></i>
-                    <span>✍️ 我要投稿分享 🍓</span>
-                </button>
-            </div>
-
-            <!-- 教師審核待辦面板 (教師模式顯示) -->
-            <div id="teacher-pending-panel" class="hidden bg-amber-50/90 border-4 border-amber-200 p-5 rounded-4xl space-y-4 shadow-sm">
-                <div class="flex items-center justify-between">
-                    <h3 class="font-black text-amber-900 text-sm md:text-base flex items-center gap-2">
-                        <i class="fa-solid fa-clock-rotate-left text-amber-600"></i> 待審核學生投稿 (<span id="pending-count">0</span>)
-                    </h3>
-                    <span class="text-xs text-amber-800 font-bold">👩‍🏫 需審核通過後才會向全體學生展示</span>
-                </div>
-                <div id="pending-works-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-            </div>
-
-            <div class="flex items-center justify-between border-b-2 border-purple-200 pb-3">
-                <div class="flex gap-2">
-                    <button onclick="filterSubmissions('all')" id="btn-sub-all" class="sub-filter-btn px-4 py-2 rounded-2xl text-xs md:text-sm font-bold bg-purple-600 text-white shadow-sm">全部作品</button>
-                    <button onclick="filterSubmissions('word')" id="btn-sub-word" class="sub-filter-btn px-4 py-2 rounded-2xl text-xs md:text-sm font-bold bg-white text-purple-700 hover:bg-purple-50 border border-purple-200">✨ 好詞句</button>
-                    <button onclick="filterSubmissions('essay')" id="btn-sub-essay" class="sub-filter-btn px-4 py-2 rounded-2xl text-xs md:text-sm font-bold bg-white text-purple-700 hover:bg-purple-50 border border-purple-200">📖 佳作文章</button>
-                </div>
-                <div class="text-xs text-purple-700 font-bold">
-                    <span id="grade-submission-label" class="text-purple-500">G4 小四組：</span>已展示 <span id="submission-count" class="text-purple-700 text-base font-black">0</span> 份投稿
-                </div>
-            </div>
-
-            <!-- 學生作品列表 -->
-            <div id="student-works-container" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
-        </section>
-
-    </main>
-
-    <!-- 4. 彈窗組件 (Modals) -->
-
-    <!-- 教師密碼驗證彈窗 -->
-    <div id="teacher-auth-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
-        <div class="bg-white rounded-5xl max-w-sm w-full p-6 md:p-8 shadow-2xl border-4 border-purple-300 relative transform scale-95 transition-transform duration-300 text-center space-y-4">
-            <div class="w-16 h-16 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center mx-auto text-3xl shadow-inner">
-                <i class="fa-solid fa-lock"></i>
-            </div>
-            <div>
-                <h3 class="text-lg font-black text-slate-800">👩‍🏫 切換教師管理模式</h3>
-                <p class="text-xs text-purple-600 mt-1">請輸入教師管理密碼以開啟權限</p>
-            </div>
-            <form onsubmit="handleTeacherAuth(event)" class="space-y-3">
-                <input type="password" id="teacher-pass-input" placeholder="請輸入密碼..." class="w-full text-center px-4 py-2.5 rounded-2xl border-2 border-purple-200 text-base font-bold tracking-widest focus:outline-none focus:border-purple-500 bg-purple-50/30">
-                <div class="flex gap-2">
-                    <button type="button" onclick="closeTeacherAuthModal()" class="w-1/2 py-2.5 rounded-2xl border border-gray-300 text-gray-600 text-xs font-bold">取消</button>
-                    <button type="submit" class="w-1/2 py-2.5 rounded-2xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-black shadow-md">確認驗證</button>
-                </div>
-            </form>
+      <!-- 教師審核專區 (僅教師模式可見) -->
+      <div id="teacher-pending-section" style="display: none;">
+        <div class="section-title" style="color: #d84315; border-bottom-color: #ff8a65;">
+          <span>⏳ 待審核學生投稿 (<span id="pending-count">0</span>)</span>
         </div>
+        <div id="pending-posts-container"></div>
+      </div>
+
+      <!-- 學生佳作展示區 -->
+      <div class="section-title">
+        <span>🌟 學生佳作與好詞句分享</span>
+        <button class="btn" style="margin-left: auto;" onclick="openSubmitModal(event)">✍️ 我要投稿分享</button>
+      </div>
+      <div id="posts-container"></div>
     </div>
 
-    <!-- AI 搜尋抽取彈窗 -->
-    <div id="ai-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
-        <div class="bg-white rounded-5xl max-w-lg w-full p-6 md:p-8 shadow-2xl border-4 border-purple-200 relative transform scale-95 transition-transform duration-300">
-            <button onclick="closeAiModal()" class="absolute top-5 right-5 text-purple-400 hover:text-purple-600 w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center text-xl">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
+  </div>
 
-            <div class="flex items-center gap-3 mb-5">
-                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-purple-500 to-indigo-600 text-white flex items-center justify-center text-2xl shadow-md">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i>
-                </div>
-                <div>
-                    <h3 class="text-lg font-black text-slate-800">✨ Melody AI 搜尋生成魔法庫</h3>
-                    <p class="text-xs text-purple-600">調用最新 AI 搜尋，為小學生成專屬好詞好句！</p>
-                </div>
-            </div>
-
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">目標年級</label>
-                    <input type="text" id="ai-grade-display" disabled class="w-full px-4 py-2.5 rounded-2xl border-2 border-purple-200 text-sm bg-gray-100 font-bold text-purple-700">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">選擇寫作主題/主題類別</label>
-                    <select id="ai-category-select" class="w-full px-4 py-2.5 rounded-2xl border-2 border-purple-200 text-sm bg-purple-50/40 font-bold text-slate-700 focus:outline-none focus:border-purple-500">
-                        <option value="自然風光與天氣描寫">🌸 自然風光與天氣描寫</option>
-                        <option value="人物心理與喜怒哀樂">💖 人物心理與喜怒哀樂</option>
-                        <option value="動作細節拆解與描繪">🏃 動作細節拆解與描繪</option>
-                        <option value="文章吸引人的精彩開頭">📖 文章吸引人的精彩開頭</option>
-                        <option value="文章結尾與情感昇華">🌟 文章結尾與情感昇華</option>
-                        <option value="節日與校園生活場面">🏫 節日與校園生活場面</option>
-                    </select>
-                </div>
-
-                <div id="ai-loading" class="hidden text-center py-4 space-y-2">
-                    <i class="fa-solid fa-spinner fa-spin text-3xl text-purple-600"></i>
-                    <p class="text-xs text-purple-600 font-bold animate-pulse">Melody 正在翻閱 Chiikawa 寫作寶庫搜尋新好詞佳句...</p>
-                </div>
-
-                <div class="flex gap-3 pt-2">
-                    <button type="button" onclick="closeAiModal()" class="w-1/3 py-3 rounded-2xl border-2 border-purple-200 text-purple-700 font-bold text-xs">取消</button>
-                    <button type="button" onclick="generateAiWords()" id="btn-ai-submit" class="w-2/3 py-3 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-black text-xs shadow-md flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-sparkles"></i>
-                        <span>立即 AI 搜尋生成 🍓</span>
-                    </button>
-                </div>
-            </div>
-        </div>
+  <!-- 彈窗：教師密碼驗證 -->
+  <div class="modal" id="password-modal">
+    <div class="modal-content">
+      <div class="modal-title">👩‍🏫 請輸入教師管理密碼</div>
+      <div class="form-group">
+        <input type="password" id="input-teacher-pwd" placeholder="請輸入密碼">
+      </div>
+      <div class="modal-btns">
+        <button class="btn" onclick="closeModal('password-modal')">取消</button>
+        <button class="btn btn-teacher" onclick="verifyPassword(event)">驗證登入</button>
+      </div>
     </div>
+  </div>
 
-    <!-- 教師新增 / 編輯課堂秘笈彈窗 (支援編輯) -->
-    <div id="lesson-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
-        <div class="bg-white rounded-5xl max-w-lg w-full p-6 md:p-8 shadow-2xl border-4 border-purple-200 relative transform scale-95 transition-transform duration-300 max-h-[90vh] overflow-y-auto">
-            <button onclick="closeLessonModal()" class="absolute top-5 right-5 text-purple-400 hover:text-purple-600 w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center text-xl">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-
-            <div class="flex items-center gap-3 mb-5">
-                <div class="w-12 h-12 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center text-2xl font-black">
-                    <i class="fa-solid fa-chalkboard"></i>
-                </div>
-                <div>
-                    <h3 id="lesson-modal-title" class="text-lg font-black text-slate-800">發佈每週寫作課堂秘笈 👩‍🏫</h3>
-                    <p class="text-xs text-purple-600">填寫課堂內容，包含普通與升級句子改寫對比</p>
-                </div>
-            </div>
-
-            <form onsubmit="handleSaveLesson(event)" class="space-y-4">
-                <input type="hidden" id="editing-lesson-id" value="">
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">目標年級</label>
-                    <select id="lesson-grade-select" class="w-full px-4 py-2.5 rounded-2xl border-2 border-purple-200 text-sm bg-purple-50/30 font-bold text-purple-800">
-                        <option value="G4">G4 (小四)</option>
-                        <option value="G5">G5 (小五)</option>
-                        <option value="G6">G6 (小六)</option>
-                    </select>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">週次/標題前綴</label>
-                        <input type="text" id="lesson-week" required placeholder="例：第1週寫作課" class="w-full px-4 py-2 rounded-2xl border-2 border-purple-200 text-xs bg-purple-50/30">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">寫作技巧類別 Badge</label>
-                        <input type="text" id="lesson-badge" required placeholder="例：五感修辭" class="w-full px-4 py-2 rounded-2xl border-2 border-purple-200 text-xs bg-purple-50/30">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">寫作秘笈主題標題</label>
-                    <input type="text" id="lesson-title" required placeholder="例：運用五感讓句子變得生動" class="w-full px-4 py-2.5 rounded-2xl border-2 border-purple-200 text-sm bg-purple-50/30">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-rose-600 mb-1">❌ 普通範例 (Before Example)</label>
-                    <textarea id="lesson-before" required rows="2" placeholder="例：今天天氣很好，太陽出來了。" class="w-full px-4 py-2 rounded-2xl border-2 border-rose-200 text-xs bg-rose-50/30"></textarea>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-emerald-600 mb-1">✨ 升級範例 (After Example)</label>
-                    <textarea id="lesson-after" required rows="2" placeholder="例：清晨，溫暖的陽光如同薄金般灑滿校園，伴隨着陣陣清脆的鳥鳴聲..." class="w-full px-4 py-2 rounded-2xl border-2 border-emerald-200 text-xs bg-emerald-50/30"></textarea>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">寫作技巧秘笈說明</label>
-                    <textarea id="lesson-content" required rows="3" placeholder="請解釋點評此技巧的運用要點..." class="w-full px-4 py-2 rounded-2xl border-2 border-purple-200 text-xs leading-relaxed bg-purple-50/30"></textarea>
-                </div>
-
-                <div class="flex gap-3 pt-2">
-                    <button type="button" onclick="closeLessonModal()" class="w-1/3 py-3 rounded-2xl border-2 border-purple-200 text-purple-700 font-bold text-xs">取消</button>
-                    <button type="submit" id="lesson-submit-btn" class="w-2/3 py-3 rounded-2xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs shadow-md">保存並發佈課堂 🎀</button>
-                </div>
-            </form>
-        </div>
+  <!-- 彈窗：新增/編輯課堂（教師專用） -->
+  <div class="modal" id="lesson-modal">
+    <div class="modal-content">
+      <div class="modal-title" id="lesson-modal-title">👩‍🏫 發佈寫作課堂秘笈</div>
+      <input type="hidden" id="edit-lesson-index" value="-1">
+      <div class="form-group">
+        <label>課堂主題：</label>
+        <input type="text" id="input-lesson-title" placeholder="例如：如何把人物寫得栩栩如生">
+      </div>
+      <div class="form-group">
+        <label>寫作技巧點撥：</label>
+        <input type="text" id="input-lesson-tech" placeholder="例如：動作拆解法 + 五感描寫">
+      </div>
+      <div class="form-group">
+        <label>修改前（普通範例）：</label>
+        <textarea id="input-lesson-before" rows="2" placeholder="小明很生氣。"></textarea>
+      </div>
+      <div class="form-group">
+        <label>修改後（升級範例）：</label>
+        <textarea id="input-lesson-after" rows="3" placeholder="小明雙眉緊鎖，氣得面紅耳赤，一把摔下課本..."></textarea>
+      </div>
+      <div class="modal-btns">
+        <button class="btn" onclick="closeModal('lesson-modal')">取消</button>
+        <button class="btn btn-teacher" onclick="saveLesson(event)">保存秘笈</button>
+      </div>
     </div>
+  </div>
 
-    <!-- 學生投稿作品彈窗 -->
-    <div id="publish-modal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
-        <div class="bg-white rounded-5xl max-w-lg w-full p-6 md:p-8 shadow-2xl border-4 border-purple-200 relative transform scale-95 transition-transform duration-300 max-h-[90vh] overflow-y-auto">
-            <button onclick="closePublishModal()" class="absolute top-5 right-5 text-purple-400 hover:text-purple-600 w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center text-xl">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-
-            <div class="flex items-center gap-3 mb-6">
-                <div class="w-12 h-12 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center text-2xl font-black border-2 border-purple-200">
-                    <i class="fa-solid fa-heart animate-pulse"></i>
-                </div>
-                <div>
-                    <h3 class="text-lg font-black text-slate-800">投稿我的寫作得意之作 🌸</h3>
-                    <p class="text-xs text-purple-600">與同年的同學分享你的精采文章！（需經老師審核發佈）</p>
-                </div>
-            </div>
-
-            <form id="submission-form" onsubmit="handleFormSubmit(event)" class="space-y-4">
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">你的名字 <span class="text-purple-600">*</span></label>
-                        <input type="text" id="author-name" required placeholder="例：陳小美" class="w-full px-4 py-2.5 rounded-2xl border-2 border-purple-200 focus:border-purple-500 focus:outline-none text-sm bg-purple-50/30">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">所屬年級 <span class="text-purple-600">*</span></label>
-                        <select id="author-grade" required class="w-full px-4 py-2.5 rounded-2xl border-2 border-purple-200 text-sm font-bold text-purple-700 bg-purple-50/30">
-                            <option value="G4">G4 (小四)</option>
-                            <option value="G5">G5 (小五)</option>
-                            <option value="G6">G6 (小六)</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">作品類別 <span class="text-purple-600">*</span></label>
-                    <div class="grid grid-cols-2 gap-3">
-                        <label class="flex items-center gap-2 p-3 border-2 rounded-2xl cursor-pointer hover:bg-purple-50 border-purple-200 has-[:checked]:border-purple-600 has-[:checked]:bg-purple-50">
-                            <input type="radio" name="work-type" value="word" checked class="accent-purple-600">
-                            <span class="text-xs font-bold text-slate-700"><i class="fa-solid fa-quote-left text-purple-400 mr-1"></i> 好詞好句</span>
-                        </label>
-                        <label class="flex items-center gap-2 p-3 border-2 rounded-2xl cursor-pointer hover:bg-purple-50 border-purple-200 has-[:checked]:border-purple-600 has-[:checked]:bg-purple-50">
-                            <input type="radio" name="work-type" value="essay" class="accent-purple-600">
-                            <span class="text-xs font-bold text-slate-700"><i class="fa-solid fa-book-heart text-purple-400 mr-1"></i> 佳作文章</span>
-                        </label>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">作品標題 <span class="text-purple-600">*</span></label>
-                    <input type="text" id="work-title" required placeholder="給作品取個吸引人的名字吧" class="w-full px-4 py-2.5 rounded-2xl border-2 border-purple-200 focus:border-purple-500 focus:outline-none text-sm bg-purple-50/30">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">作品內容 <span class="text-purple-600">*</span></label>
-                    <textarea id="work-content" required rows="4" placeholder="在此輸入優美好句或完整文章..." class="w-full px-4 py-2.5 rounded-2xl border-2 border-purple-200 focus:border-purple-500 focus:outline-none text-sm bg-purple-50/30 leading-relaxed"></textarea>
-                </div>
-
-                <div class="flex items-center gap-3 pt-2">
-                    <button type="button" onclick="closePublishModal()" class="w-1/3 py-3 rounded-2xl border-2 border-purple-200 text-purple-700 font-bold hover:bg-purple-50 text-sm">取消</button>
-                    <button type="submit" class="w-2/3 py-3 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold text-sm shadow-md flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-paper-plane"></i><span>確認投稿 🍓</span>
-                    </button>
-                </div>
-            </form>
-        </div>
+  <!-- 彈窗：學生投稿 -->
+  <div class="modal" id="submit-modal">
+    <div class="modal-content">
+      <div class="modal-title">✍️ 分享我的寫作成果</div>
+      <div style="background-color: #fff3e0; border-left: 4px solid #ff9800; padding: 10px; margin-bottom: 15px; border-radius: 6px; font-size: 0.95rem; color: #e65100;">
+        💡 提示：你的投稿將提交給老師審核，審核通過後才會展示給同學們看到喔！
+      </div>
+      <div class="form-group">
+        <label>學生姓名：</label>
+        <input type="text" id="input-student-name" placeholder="請輸入你的名字">
+      </div>
+      <div class="form-group">
+        <label>分享類別：</label>
+        <select id="input-post-type">
+          <option value="好詞好句">好詞好句</option>
+          <option value="整篇佳作">整篇佳作</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>作品標題 / 詞語：</label>
+        <input type="text" id="input-post-title" placeholder="例如：《一次難忘的郊遊》或【繁星點點】">
+      </div>
+      <div class="form-group">
+        <label>作品內容：</label>
+        <textarea id="input-post-content" rows="4" placeholder="請寫下你的好句或文章片段..."></textarea>
+      </div>
+      <div class="modal-btns">
+        <button class="btn" onclick="closeModal('submit-modal')">取消</button>
+        <button class="btn" onclick="saveStudentPost(event)">提交作品</button>
+      </div>
     </div>
+  </div>
 
-    <!-- 頁尾 -->
-    <footer class="bg-white/90 border-t-4 border-chiikawaLavender py-6 mt-12 text-center text-slate-500 text-xs">
-        <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <div class="flex items-center gap-2 font-bold text-purple-700">
-                <i class="fa-solid fa-heart text-purple-600 text-base"></i>
-                <span>Melody的寫作百寶袋 - Chiikawa主題小學中文寫作學習平台</span>
+  <script>
+    // 狀態管理
+    let currentGrade = 'G4';
+    let isTeacherMode = false;
+    const TEACHER_PWD = "hanyutong";
+
+    // 多天輪換的好詞好句庫（隨日期演算法輪換）
+    const dailyPool = {
+      G4: [
+        { word: "【繁星點點】", sentence: "夜幕降臨，天空像鋪上了一塊深藍色的絨布，上面綴滿了繁星點點，眨著好奇的眼睛。" },
+        { word: "【喜出望外】", sentence: "得知自己的文章獲選登在校刊上，姐姐喜出望外，高興得手舞足蹈。" },
+        { word: "【生機勃勃】", sentence: "陽春三月，花園裡的小草探出頭來，百花齊放，到處展現出一派生機勃勃的景象。" }
+      ],
+      G5: [
+        { word: "【驚慌失措】", sentence: "突如其來的暴雨讓路上的行人驚慌失措，大家紛紛拿起手邊的物品遮擋，狼狽地尋找避雨的地方。" },
+        { word: "【目不轉睛】", sentence: "魔術師在台上進行精彩的表演，台下的同學們都目不轉睛地盯著手部動作，生怕錯過任何細節。" },
+        { word: "【栩栩如生】", sentence: "畫展上的那幅駿馬圖畫得極為傳神，馬兒矯健的身姿彷彿隨時會躍出畫框，真是栩栩如生。" }
+      ],
+      G6: [
+        { word: "【跌宕起伏】", sentence: "這部小說的情節跌宕起伏，扣人心弦，讓讀者時而緊張得屏息凝神，時而感動得熱淚盈眶。" },
+        { word: "【耐人尋味】", sentence: "老師語重心長地講完這個寓言故事後，全班陷入了沉思，其中的哲理確實耐人尋味。" },
+        { word: "【情景交融】", sentence: "作者在文章中將對家鄉景物的細緻描繪與離鄉的思念之情結合得天衣無縫，達到了情景交融的境界。" }
+      ]
+    };
+
+    // 本地資料庫數據結構
+    let appData = {
+      lessons: { G4: [], G5: [], G6: [] },
+      approvedPosts: { G4: [], G5: [], G6: [] },  // 已審核通過的作品
+      pendingPosts: { G4: [], G5: [], G6: [] }   // 待審核的作品
+    };
+
+    // 全局點擊粒子消散特效
+    document.addEventListener('click', function(e) {
+      createDissolveParticles(e.clientX, e.clientY);
+    });
+
+    function createDissolveParticles(x, y) {
+      const colors = ['#ab47bc', '#ce93d8', '#e1bee7', '#f8bbd0', '#ffd54f'];
+      for (let i = 0; i < 12; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        document.body.appendChild(particle);
+
+        const size = Math.random() * 8 + 4;
+        particle.style.width = size + 'px';
+        particle.style.height = size + 'px';
+        particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+        particle.style.left = x + 'px';
+        particle.style.top = y + 'px';
+
+        const angle = Math.random() * Math.PI * 2;
+        const velocity = Math.random() * 60 + 20;
+        const dx = Math.cos(angle) * velocity + 'px';
+        const dy = Math.sin(angle) * velocity + 'px';
+
+        particle.style.setProperty('--dx', dx);
+        particle.style.setProperty('--dy', dy);
+
+        setTimeout(() => particle.remove(), 700);
+      }
+    }
+
+    // 初始化日曆與日期自動輪換好詞好句
+    function initCalendarAndDailyWord() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth() + 1;
+      const date = now.getDate();
+      const days = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+      
+      document.getElementById('cal-year-month').innerText = `${year}年${month}月`;
+      document.getElementById('cal-day').innerText = date < 10 ? '0' + date : date;
+      document.getElementById('cal-week').innerText = days[now.getDay()];
+
+      // 根據日期演算法計算今天輪換的詞句索引
+      const dayOffset = Math.floor(now.getTime() / (1000 * 60 * 60 * 24));
+      const pool = dailyPool[currentGrade];
+      const todayIndex = dayOffset % pool.length;
+
+      document.getElementById('daily-word').innerText = pool[todayIndex].word;
+      document.getElementById('daily-sentence').innerText = pool[todayIndex].sentence;
+    }
+
+    // 選擇年級
+    function selectGrade(grade, event) {
+      if (event) event.stopPropagation();
+      currentGrade = grade;
+      document.getElementById('grade-gateway').style.display = 'none';
+      document.getElementById('main-dashboard').style.display = 'block';
+      
+      const titleMap = { G4: "小四 (G4) 寫作百寶袋", G5: "小五 (G5) 寫作百寶袋", G6: "小六 (G6) 寫作百寶袋" };
+      document.getElementById('current-grade-title').innerText = titleMap[grade];
+
+      initCalendarAndDailyWord();
+      renderLessons();
+      renderPosts();
+    }
+
+    // 切換返回年級首頁
+    function showGateway() {
+      document.getElementById('grade-gateway').style.display = 'block';
+      document.getElementById('main-dashboard').style.display = 'none';
+    }
+
+    // 教師模式切換處理
+    function handleTeacherToggle() {
+      if (!isTeacherMode) {
+        document.getElementById('password-modal').style.display = 'flex';
+        document.getElementById('input-teacher-pwd').value = '';
+      } else {
+        isTeacherMode = false;
+        updateTeacherUI();
+      }
+    }
+
+    // 驗證教師密碼
+    function verifyPassword(event) {
+      if (event) event.stopPropagation();
+      const pwd = document.getElementById('input-teacher-pwd').value;
+      if (pwd === TEACHER_PWD) {
+        isTeacherMode = true;
+        closeModal('password-modal');
+        updateTeacherUI();
+      } else {
+        alert("密碼錯誤，請重新輸入！");
+      }
+    }
+
+    // 更新 UI 狀態
+    function updateTeacherUI() {
+      const btn = document.getElementById('btn-toggle-teacher');
+      const statusText = document.getElementById('teacher-status');
+
+      if (isTeacherMode) {
+        statusText.innerText = "(已開啟)";
+        btn.classList.add('btn-teacher-active');
+        document.getElementById('teacher-lesson-add-area').style.display = 'block';
+        document.getElementById('teacher-pending-section').style.display = 'block';
+      } else {
+        statusText.innerText = "(關閉)";
+        btn.classList.remove('btn-teacher-active');
+        document.getElementById('teacher-lesson-add-area').style.display = 'none';
+        document.getElementById('teacher-pending-section').style.display = 'none';
+      }
+
+      renderLessons();
+      renderPosts();
+    }
+
+    // 渲染每週寫作課堂
+    function renderLessons() {
+      const container = document.getElementById('lessons-container');
+      const list = appData.lessons[currentGrade];
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="empty-card">
+            📖 目前老師尚未發佈本週寫作課堂。<br>
+            <small style="font-size:0.95rem; color:#8e24aa;">(請教師開啟右上角「教師編輯模式」進行課程編寫)</small>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.map((item, index) => `
+        <div class="lesson-card">
+          ${isTeacherMode ? `
+            <div class="card-actions">
+              <button class="btn-edit" onclick="openEditLessonModal(${index}, event)">✏️ 編輯</button>
+              <button class="delete-btn" onclick="deleteLesson(${index})">🗑️ 刪除</button>
             </div>
-            <p>© 香港小學寫作學習平台 · 支援 G4/G5/G6 階梯式學習</p>
+          ` : ''}
+          <h3>${item.title}</h3>
+          <span class="technique-tag">💡 技巧：${item.tech}</span>
+          <div class="example-box"><strong>❌ 普通描寫：</strong>${item.before}</div>
+          <div class="example-box" style="background-color:#e8f5e9; border-left-color:#66bb6a;"><strong>✨ 升級好句：</strong>${item.after}</div>
         </div>
-    </footer>
+      `).join('');
+    }
 
-    <!-- JavaScript 邏輯控制 -->
-    <script>
-        // 1. 全局狀態控制
-        let currentGrade = 'G4';
-        let currentDailyFilter = 'all';
-        let currentSubFilter = 'all';
-        let isTeacherMode = false;
+    // 開啟新增課堂彈窗
+    function openAddLessonModal(event) {
+      if (event) event.stopPropagation();
+      document.getElementById('lesson-modal-title').innerText = "👩‍🏫 發佈寫作課堂秘笈";
+      document.getElementById('edit-lesson-index').value = "-1";
+      document.getElementById('input-lesson-title').value = '';
+      document.getElementById('input-lesson-tech').value = '';
+      document.getElementById('input-lesson-before').value = '';
+      document.getElementById('input-lesson-after').value = '';
+      document.getElementById('lesson-modal').style.display = 'flex';
+    }
 
-        /* --------------------------------------------------------------------------
-           每日輪換好詞佳句池
-           -------------------------------------------------------------------------- */
-        const dailyPoolByGrade = {
-            'G4': [
-                [
-                    { id: 101, type: 'words', category: '自然景物', title: '陽光明媚', pinyin: 'yáng guāng míng mèi', content: '形容天氣晴朗，陽光溫暖耀眼。', example: '今天陽光明媚，我們全班一起去郊野公園野餐。', tags: ['天氣描寫', '四字詞', '小四必學'], favorited: false },
-                    { id: 102, type: 'sentences', category: '五感描寫', title: '聽覺與視覺結合', pinyin: '', content: '運用耳朵聽到的聲音與眼睛看到的色彩，讓景色活靈活現。', example: '清晨，小鳥在樹枝上唱著清脆的歌聲，金黃色的陽光透過樹葉灑在地面上。', tags: ['比喻修辭', '五感描寫', '景色作文'], favorited: true },
-                    { id: 103, type: 'words', category: '人物心情', title: '興高采烈', pinyin: 'xìng gāo cǎi liè', content: '形容興致勃勃，心情非常愉快。', example: '聽到獲獎的消息，同學們興高采烈地歡呼起來。', tags: ['心情描寫', '四字詞'], favorited: false }
-                ],
-                [
-                    { id: 104, type: 'words', category: '外貌描寫', title: '眉清目秀', pinyin: 'méi qīng mù xiù', content: '形容容貌清秀俊美，看起來非常有神采。', example: '新來的轉校生眉清目秀，說話非常有禮貌。', tags: ['外貌描寫', '人物作文'], favorited: false },
-                    { id: 105, type: 'sentences', category: '觸覺描寫', title: '微風拂面的舒適感', pinyin: '', content: '將微風的觸感描寫得如絲綢般柔和。', example: '陣陣涼爽的微風如溫柔的手撫過面頰，帶來了絲絲花草的甜香。', tags: ['微風觸覺', '擬人修辭'], favorited: false },
-                    { id: 106, type: 'words', category: '環境氣氛', title: '歡聲笑語', pinyin: 'huān shēng xiào yǔ', content: '形容歡快的聲音和談笑聲縈繞不絕。', example: '操場上到處都是同學們的歡聲笑語，好不熱鬧！', tags: ['校園生活', '場面描寫'], favorited: false }
-                ]
-            ],
-            'G5': [
-                [
-                    { id: 201, type: 'words', category: '動作描繪', title: '健步如飛', pinyin: 'jiàn bù rú fēi', content: '形容腳步邁得大而快，走得非常快。', example: '運動員們在跑道上健步如飛，向著終點線衝刺。', tags: ['動作描寫', '成語運用', '小五進階'], favorited: false },
-                    { id: 202, type: 'sentences', category: '心理寫真', title: '緊張不安的情緒', pinyin: '', content: '通過生理反應來展現人物內心的緊張。', example: '站在演講台上，我的心像是揣著一隻小兔般怦怦直跳，掌心也微微滲出了冷汗。', tags: ['心理描寫', '細緻描繪'], favorited: false }
-                ]
-            ],
-            'G6': [
-                [
-                    { id: 301, type: 'words', category: '文章感悟', title: '受益匪淺', pinyin: 'shòu yì fěi qiǎn', content: '指獲得了很大的教益或好處。', example: '這一次校外參觀活動讓我開闊了眼界，真是受益匪淺。', tags: ['呈分試必備', '高級成語', '結尾昇華'], favorited: false },
-                    { id: 302, type: 'sentences', category: '情景交融', title: '借景抒情句', pinyin: '', content: '將個人的情感融入於自然環境的變化之中。', example: '夕陽西下，晚霞將天空染成一片熾熱的橘紅，彷彿也在為我取得的進步而喝彩。', tags: ['情景交融', '呈分試拔尖', '高分範句'], favorited: true }
-                ]
-            ]
-        };
+    // 開啟編輯課堂彈窗
+    function openEditLessonModal(index, event) {
+      if (event) event.stopPropagation();
+      const lesson = appData.lessons[currentGrade][index];
+      document.getElementById('lesson-modal-title').innerText = "✏️ 編輯寫作課堂秘笈";
+      document.getElementById('edit-lesson-index').value = index;
+      document.getElementById('input-lesson-title').value = lesson.title || '';
+      document.getElementById('input-lesson-tech').value = lesson.tech || '';
+      document.getElementById('input-lesson-before').value = lesson.before || '';
+      document.getElementById('input-lesson-after').value = lesson.after || '';
+      document.getElementById('lesson-modal').style.display = 'flex';
+    }
 
-        // 動態資料庫
-        let dailyItemsByGrade = { 'G4': [], 'G5': [], 'G6': [] };
-        
-        // 每週寫作課堂資料（預設示範數據）
-        const classroomLessonsByGrade = { 
-            'G4': [
-                {
-                    id: 1001,
-                    week: '第1週寫作課',
-                    badge: '五感修辭',
-                    title: '運用感官細節讓景物躍然紙上',
-                    before: '今天天氣很好，天空很藍，花開得漂亮。',
-                    after: '清晨，湛藍的天空如同一塊光潔的翡翠，陣陣微風吹過，帶來了百合花的淡雅甜香，令人心曠神怡。',
-                    content: '【寫作秘笈】寫景時不要只寫「很好看」，要嘗試結合「視覺（藍天如翡翠）」與「嗅覺（百合花甜香）」，讓讀者有身臨其境之感！'
-                }
-            ], 
-            'G5': [], 
-            'G6': [] 
-        };
+    // 保存課堂 (新增或修改)
+    function saveLesson(event) {
+      if (event) event.stopPropagation();
+      const editIndex = parseInt(document.getElementById('edit-lesson-index').value);
+      const title = document.getElementById('input-lesson-title').value.trim();
+      const tech = document.getElementById('input-lesson-tech').value.trim();
+      const before = document.getElementById('input-lesson-before').value.trim();
+      const after = document.getElementById('input-lesson-after').value.trim();
 
-        // 已審核通過可供展示的作品
-        const studentWorksByGrade = { 'G4': [], 'G5': [], 'G6': [] };
-        // 待審核的作品隊列 (pendingPosts)
-        const pendingWorksByGrade = { 
-            'G4': [
-                {
-                    id: 9001,
-                    author: '張小明',
-                    grade: 'G4 (小四)',
-                    gradeCode: 'G4',
-                    type: 'word',
-                    title: '形容秋天的優美好詞',
-                    content: '【秋高氣爽】秋天的天空特別高遠，涼爽的微風吹來讓人神清氣爽。',
-                    likes: 0,
-                    liked: false,
-                    comments: [],
-                    time: '待審核'
-                }
-            ], 
-            'G5': [], 
-            'G6': [] 
-        };
+      if (!title || !after) {
+        alert("請輸入課堂標題與升級好句！");
+        return;
+      }
 
-        /* --------------------------------------------------------------------------
-           2. 初始化與自動日期演算
-           -------------------------------------------------------------------------- */
-        window.onload = function() {
-            updateRealDateDisplay();
-            calculateAndSetDailyWords();
-            setGrade('G4');
-        };
+      const lessonData = { title, tech, before, after };
 
-        function updateRealDateDisplay() {
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = today.getMonth() + 1;
-            const date = today.getDate();
-            const days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
-            const dayName = days[today.getDay()];
+      if (editIndex >= 0) {
+        // 編輯模式：更新原資料
+        appData.lessons[currentGrade][editIndex] = lessonData;
+      } else {
+        // 新增模式：推入新資料
+        appData.lessons[currentGrade].push(lessonData);
+      }
 
-            document.getElementById('real-date-display').innerText = `${year}年${month}月${date}日 ${dayName}`;
+      closeModal('lesson-modal');
+      renderLessons();
+    }
+
+    // 刪除課堂
+    function deleteLesson(index) {
+      if (confirm("確定要刪除這堂寫作秘笈嗎？")) {
+        appData.lessons[currentGrade].splice(index, 1);
+        renderLessons();
+      }
+    }
+
+    // 渲染學生作品 (區分公開與審核專區)
+    function renderPosts() {
+      const container = document.getElementById('posts-container');
+      const pendingContainer = document.getElementById('pending-posts-container');
+      
+      const approvedList = appData.approvedPosts[currentGrade];
+      const pendingList = appData.pendingPosts[currentGrade];
+
+      // 1. 渲染待審核區 (僅教師)
+      if (isTeacherMode) {
+        document.getElementById('pending-count').innerText = pendingList.length;
+        if (pendingList.length === 0) {
+          pendingContainer.innerHTML = `<div class="empty-card" style="padding: 20px;">🎉 目前沒有等待審核的學生投稿。</div>`;
+        } else {
+          pendingContainer.innerHTML = pendingList.map((item, index) => `
+            <div class="post-card pending-card">
+              <div class="card-actions">
+                <button class="btn-pass" onclick="approvePost(${index})">✅ 通過</button>
+                <button class="btn-reject" onclick="rejectPost(${index})">❌ 拒絕</button>
+              </div>
+              <h3>${item.title} <small style="font-size:0.9rem; color:#d84315;">[${item.type}] - ${item.name} 同學 (待審核)</small></h3>
+              <p style="font-size:1.15rem; line-height:1.6; color:#311b92;">${item.content}</p>
+            </div>
+          `).join('');
         }
-
-        // 依據 Date.now() / 86400000 算日數索引
-        function calculateAndSetDailyWords() {
-            const dayIndex = Math.floor(Date.now() / (1000 * 60 * 60 * 24));
-
-            ['G4', 'G5', 'G6'].forEach(grade => {
-                const pool = dailyPoolByGrade[grade];
-                if (pool && pool.length > 0) {
-                    const poolIndex = dayIndex % pool.length;
-                    dailyItemsByGrade[grade] = JSON.parse(JSON.stringify(pool[poolIndex]));
-                }
-            });
-        }
-
-        /* --------------------------------------------------------------------------
-           3. 點擊特效
-           -------------------------------------------------------------------------- */
-        function createParticleEffect(e) {
-            const symbols = ['🌸', '✨', '💜', '🍓', '🎀', '🎓'];
-            const particle = document.createElement('div');
-            particle.className = 'click-particle';
-            particle.innerText = symbols[Math.floor(Math.random() * symbols.length)];
-            particle.style.left = `${e.clientX}px`;
-            particle.style.top = `${e.clientY}px`;
-            document.body.appendChild(particle);
-
-            setTimeout(() => particle.remove(), 1000);
-        }
-
-        /* --------------------------------------------------------------------------
-           4. 年級與門戶頁面切換
-           -------------------------------------------------------------------------- */
-        function selectGradeFromLanding(grade) {
-            setGrade(grade);
-            const landing = document.getElementById('landing-screen');
-            landing.classList.add('opacity-0', 'transition-opacity', 'duration-300');
-            setTimeout(() => {
-                landing.classList.add('hidden');
-                landing.classList.remove('opacity-0');
-            }, 300);
-        }
-
-        function showLandingScreen() {
-            const landing = document.getElementById('landing-screen');
-            landing.classList.remove('hidden');
-        }
-
-        function setGrade(grade) {
-            currentGrade = grade;
-
-            document.getElementById('header-grade-name').innerText = grade === 'G4' ? 'G4 (小四)' : grade === 'G5' ? 'G5 (小五)' : 'G6 (小六)';
-
-            const gradeBadge = document.getElementById('grade-badge');
-            const targetTag = document.getElementById('grade-target-tag');
-            const title = document.getElementById('grade-welcome-title');
-            const desc = document.getElementById('grade-welcome-desc');
-            const subLabel = document.getElementById('grade-submission-label');
-
-            if (grade === 'G4') {
-                gradeBadge.innerText = '當前年級：G4 (小四)';
-                targetTag.innerText = '重點：感官描寫 & 比喻擬人修辭';
-                title.innerText = '歡迎來到 G4 小四寫作百寶袋！🌸';
-                desc.innerText = '積累基礎好詞佳句，掌握五感描寫法，讓句子變得可愛又豐富！';
-                subLabel.innerText = 'G4 小四組：';
-            } else if (grade === 'G5') {
-                gradeBadge.innerText = '當前年級：G5 (小五)';
-                targetTag.innerText = '重點：動作拆解 & 心理狀態寫真';
-                title.innerText = '歡迎來到 G5 小五寫作百寶袋！🍓';
-                desc.innerText = '挑戰豐富成語與動態人物描寫，讓作文充滿緊張與震撼力！';
-                subLabel.innerText = 'G5 小五組：';
-            } else if (grade === 'G6') {
-                gradeBadge.innerText = '當前年級：G6 (小六)';
-                targetTag.innerText = '重點：情景交融 & 呈分試高分感悟';
-                title.innerText = '歡迎來到 G6 小六寫作百寶袋！🎓';
-                desc.innerText = '精通高級成語、情景交融與哲理感悟，在呈分試與升中寫作中拔得頭籌！';
-                subLabel.innerText = 'G6 小六組：';
-            }
-
-            document.getElementById('author-grade').value = grade;
-
-            renderDailyCards(currentDailyFilter);
-            renderClassroom();
-            renderStudentWorks(currentSubFilter);
-            renderPendingWorks();
-        }
-
-        function switchTab(tabName) {
-            document.getElementById('section-daily').classList.add('hidden');
-            document.getElementById('section-classroom').classList.add('hidden');
-            document.getElementById('section-share').classList.add('hidden');
-
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-                btn.classList.add('text-purple-800');
-            });
-
-            document.getElementById(`section-${tabName}`).classList.remove('hidden');
-            const activeBtn = document.getElementById(`tab-${tabName}`);
-            activeBtn.classList.add('active');
-            activeBtn.classList.remove('text-purple-800');
-        }
-
-        /* --------------------------------------------------------------------------
-           5. 教師驗證與權限 (密碼: hanyutong)
-           -------------------------------------------------------------------------- */
-        function openTeacherAuthModal() {
-            const modal = document.getElementById('teacher-auth-modal');
-            document.getElementById('teacher-pass-input').value = '';
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                modal.classList.remove('opacity-0');
-                modal.querySelector('div').classList.remove('scale-95');
-                modal.querySelector('div').classList.add('scale-100');
-            }, 10);
-        }
-
-        function closeTeacherAuthModal() {
-            const modal = document.getElementById('teacher-auth-modal');
-            modal.querySelector('div').classList.remove('scale-100');
-            modal.querySelector('div').classList.add('scale-95');
-            modal.classList.add('opacity-0');
-            setTimeout(() => modal.classList.add('hidden'), 300);
-        }
-
-        function handleTeacherAuth(e) {
-            e.preventDefault();
-            const input = document.getElementById('teacher-pass-input').value;
-            if (input === "hanyutong") {
-                isTeacherMode = !isTeacherMode;
-                updateTeacherModeUI();
-                closeTeacherAuthModal();
-            } else {
-                alert("密碼不正確！(教師密碼為: hanyutong)");
-            }
-        }
-
-        function updateTeacherModeUI() {
-            const headerBtnText = document.getElementById('header-teacher-btn-text');
-            const landingBtnText = document.getElementById('landing-teacher-btn-text');
-            const classroomStatus = document.getElementById('classroom-teacher-status');
-            const controlPanel = document.getElementById('teacher-control-panel');
-            const pendingPanel = document.getElementById('teacher-pending-panel');
-
-            if (isTeacherMode) {
-                headerBtnText.innerText = '👩‍🏫 教師模式 (已開啟)';
-                landingBtnText.innerText = '👩‍🏫 教師模式 (已開啟)';
-                classroomStatus.innerText = '👩‍🏫 教師模式 (已開啟)';
-                
-                document.getElementById('header-teacher-btn').className = 'px-3.5 py-1.5 rounded-full bg-purple-600 text-white font-black text-xs transition-all border-2 border-purple-300 shadow-sm flex items-center gap-1.5 shrink-0';
-                document.getElementById('landing-teacher-btn').className = 'px-3.5 py-1.5 rounded-full bg-purple-600 text-white font-black text-xs transition-all border-2 border-purple-300 shadow-md flex items-center gap-1.5';
-
-                controlPanel.classList.remove('hidden');
-                pendingPanel.classList.remove('hidden');
-            } else {
-                headerBtnText.innerText = '👩‍🏫 教師模式';
-                landingBtnText.innerText = '👩‍🏫 教師模式';
-                classroomStatus.innerText = '👩‍🏫 教師模式';
-
-                document.getElementById('header-teacher-btn').className = 'px-3.5 py-1.5 rounded-full bg-purple-100 hover:bg-purple-200 text-purple-800 font-black text-xs transition-all border-2 border-purple-300 shadow-sm flex items-center gap-1.5 shrink-0';
-                document.getElementById('landing-teacher-btn').className = 'px-3.5 py-1.5 rounded-full bg-white/90 hover:bg-purple-600 hover:text-white text-purple-800 font-black text-xs transition-all border-2 border-purple-300 shadow-md flex items-center gap-1.5';
-
-                controlPanel.classList.add('hidden');
-                pendingPanel.classList.add('hidden');
-            }
-
-            renderClassroom();
-            renderStudentWorks(currentSubFilter);
-            renderPendingWorks();
-        }
-
-        /* --------------------------------------------------------------------------
-           6. 好詞佳句渲染
-           -------------------------------------------------------------------------- */
-        function filterDaily(category) {
-            currentDailyFilter = category;
-            document.querySelectorAll('.filter-daily-btn').forEach(btn => {
-                btn.classList.remove('bg-purple-600', 'text-white');
-                btn.classList.add('bg-white', 'text-purple-700');
-            });
-            const activeBtn = document.getElementById(`btn-daily-${category}`);
-            if (activeBtn) {
-                activeBtn.classList.remove('bg-white', 'text-purple-700');
-                activeBtn.classList.add('bg-purple-600', 'text-white');
-            }
-            renderDailyCards(category);
-        }
-
-        function renderDailyCards(filter) {
-            const container = document.getElementById('daily-cards-container');
-            container.innerHTML = '';
-
-            const items = dailyItemsByGrade[currentGrade] || [];
-            const filteredItems = items.filter(item => filter === 'all' || item.type === filter);
-
-            if (filteredItems.length === 0) {
-                container.innerHTML = `<div class="col-span-full text-center py-12 text-purple-600 font-bold">Melody 正為你採摘 ${currentGrade} 的好詞佳句，請點選右上角 AI 按鈕抽取/搜尋新好詞！🌸</div>`;
-                return;
-            }
-
-            filteredItems.forEach(item => {
-                const isWord = item.type === 'words';
-                const card = document.createElement('div');
-                card.className = "bg-white rounded-5xl p-6 shadow-sm border-4 border-purple-100 card-hover flex flex-col justify-between relative overflow-hidden";
-
-                card.innerHTML = `
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold px-3 py-1 rounded-full ${isWord ? 'bg-purple-100 text-purple-700' : 'bg-pink-100 text-pink-700'} border border-purple-200">
-                                ${isWord ? '🍓 Melody精選好詞' : '🌸 夢幻佳句'} · ${item.category}
-                            </span>
-                            <div class="flex items-center gap-1.5">
-                                <button onclick="toggleFavorite(${item.id})" title="收藏" class="w-9 h-9 rounded-full bg-purple-50 hover:bg-purple-100 text-purple-600 flex items-center justify-center transition-colors">
-                                    <i class="${item.favorited ? 'fa-solid text-purple-600' : 'fa-regular'} fa-heart text-xs"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div>
-                            <h3 class="text-lg font-black text-slate-800 flex items-baseline gap-2">
-                                ${item.title}
-                                ${item.pinyin ? `<span class="text-xs font-normal text-purple-400 font-sans">${item.pinyin}</span>` : ''}
-                            </h3>
-                            <p class="text-slate-600 text-xs md:text-sm mt-2 leading-relaxed bg-purple-50/50 p-3 rounded-2xl border border-purple-100">
-                                ${item.content}
-                            </p>
-                        </div>
-
-                        <div class="text-xs space-y-1">
-                            <span class="font-bold text-purple-600 block">造句/範例：</span>
-                            <p class="text-slate-700 italic bg-amber-50/70 p-2.5 rounded-2xl border border-amber-100">
-                                "${item.example}"
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="flex flex-wrap gap-1 mt-4 pt-3 border-t border-purple-100">
-                        ${item.tags.map(t => `<span class="text-[10px] font-bold text-purple-600 bg-purple-50 px-2 py-0.5 rounded-lg">#${t}</span>`).join('')}
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        function toggleFavorite(id) {
-            const items = dailyItemsByGrade[currentGrade] || [];
-            const item = items.find(i => i.id === id);
-            if (item) {
-                item.favorited = !item.favorited;
-                renderDailyCards(currentDailyFilter);
-            }
-        }
-
-        /* --------------------------------------------------------------------------
-           7. AI 搜尋生成邏輯 (Gemini API)
-           -------------------------------------------------------------------------- */
-        function openAiGeneratorModal() {
-            document.getElementById('ai-grade-display').value = `${currentGrade} (${currentGrade==='G4'?'小四':currentGrade==='G5'?'小五':'小六'})`;
-            const modal = document.getElementById('ai-modal');
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                modal.classList.remove('opacity-0');
-                modal.querySelector('div').classList.remove('scale-95');
-                modal.querySelector('div').classList.add('scale-100');
-            }, 10);
-        }
-
-        function closeAiModal() {
-            const modal = document.getElementById('ai-modal');
-            modal.querySelector('div').classList.remove('scale-100');
-            modal.querySelector('div').classList.add('scale-95');
-            modal.classList.add('opacity-0');
-            setTimeout(() => modal.classList.add('hidden'), 300);
-        }
-
-        async function generateAiWords() {
-            const category = document.getElementById('ai-category-select').value;
-            const loading = document.getElementById('ai-loading');
-            const submitBtn = document.getElementById('btn-ai-submit');
-
-            loading.classList.remove('hidden');
-            submitBtn.disabled = true;
-
-            const apiKey = "";
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
-
-            const systemPrompt = "你是一位專門輔導香港小學中文寫作的名師 Melody。請為指定的香港小學年級學生搜尋並生成1個精美寫作卡片資料，要求格式必須為合法的JSON。";
-            const userPrompt = `請為香港小學【${currentGrade}】年級學生，針對主題【${category}】，搜尋並生成一個優美好詞或好句。
-            請嚴格返回 JSON 格式如下：
-            {
-                "type": "words" 或 "sentences",
-                "category": "${category}",
-                "title": "詞語或句子主題名稱",
-                "pinyin": "漢語拼音",
-                "content": "詳細的含義解釋或修辭秘笈解讀（約30字）",
-                "example": "精彩的造句或文章範例（適合該年級水平，約40字）",
-                "tags": ["標籤1", "標籤2", "標籤3"]
-            }`;
-
-            const payload = {
-                contents: [{ parts: [{ text: userPrompt }] }],
-                systemInstruction: { parts: [{ text: systemPrompt }] },
-                generationConfig: {
-                    responseMimeType: "application/json",
-                    responseSchema: {
-                        type: "OBJECT",
-                        properties: {
-                            type: { type: "STRING" },
-                            category: { type: "STRING" },
-                            title: { type: "STRING" },
-                            pinyin: { type: "STRING" },
-                            content: { type: "STRING" },
-                            example: { type: "STRING" },
-                            tags: { type: "ARRAY", items: { type: "STRING" } }
-                        },
-                        required: ["type", "category", "title", "content", "example", "tags"]
-                    }
-                }
-            };
-
-            try {
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                const result = await response.json();
-                const jsonText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
-
-                if (jsonText) {
-                    const newItem = JSON.parse(jsonText);
-                    newItem.id = Date.now();
-                    newItem.favorited = false;
-
-                    if (!dailyItemsByGrade[currentGrade]) dailyItemsByGrade[currentGrade] = [];
-                    dailyItemsByGrade[currentGrade].unshift(newItem);
-
-                    renderDailyCards(currentDailyFilter);
-                    closeAiModal();
-                }
-            } catch (err) {
-                console.error("AI Generation Error:", err);
-                alert("Melody 魔法搜尋時出現了一點小插曲，請重試一下吧！");
-            } finally {
-                loading.classList.add('hidden');
-                submitBtn.disabled = false;
-            }
-        }
-
-        /* --------------------------------------------------------------------------
-           8. 每週寫作課堂：新增、編輯與刪除
-           -------------------------------------------------------------------------- */
-        function renderClassroom() {
-            const container = document.getElementById('classroom-container');
-            container.innerHTML = '';
-
-            const lessons = classroomLessonsByGrade[currentGrade] || [];
-
-            if (lessons.length === 0) {
-                container.innerHTML = `
-                    <div class="bg-white rounded-5xl p-8 border-4 border-dashed border-purple-200 text-center space-y-3 shadow-sm">
-                        <div class="w-16 h-16 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center mx-auto text-2xl animate-floating">
-                            🎀
-                        </div>
-                        <h3 class="font-black text-slate-700 text-lg">目前老師尚未發佈本週寫作課堂</h3>
-                        <p class="text-xs text-slate-500 max-w-sm mx-auto leading-relaxed">
-                            請耐心期待老師上傳最新的寫作技巧秘笈與優劣範例對比吧！
-                            ${isTeacherMode ? '<br><span class="text-purple-600 font-bold">（老師您現在可點擊上方按鈕新增每週寫作課堂秘笈）</span>' : ''}
-                        </p>
-                    </div>
-                `;
-                return;
-            }
-
-            lessons.forEach((lesson) => {
-                const card = document.createElement('div');
-                card.className = "bg-white rounded-4xl border-4 border-purple-100 shadow-sm overflow-hidden transition-all";
-
-                card.innerHTML = `
-                    <div onclick="toggleLesson(${lesson.id})" class="p-5 flex items-center justify-between cursor-pointer hover:bg-purple-50/50 transition-colors select-none">
-                        <div class="flex items-center gap-3 md:gap-4">
-                            <div class="w-10 h-10 md:w-11 md:h-11 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center text-base md:text-lg shrink-0 border border-purple-200">
-                                <i class="fa-solid fa-ribbon"></i>
-                            </div>
-                            <div>
-                                <div class="flex items-center gap-2 mb-0.5">
-                                    <span class="text-xs font-bold text-purple-500">${lesson.week}</span>
-                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-purple-100 text-purple-800">${lesson.badge}</span>
-                                </div>
-                                <h3 class="text-sm md:text-base font-black text-slate-800">${lesson.title}</h3>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center gap-2">
-                            ${isTeacherMode ? `
-                                <button onclick="event.stopPropagation(); editLesson(${lesson.id})" class="px-3 py-1 bg-purple-100 text-purple-700 hover:bg-purple-200 text-xs font-bold rounded-xl border border-purple-300 flex items-center gap-1 transition-colors">
-                                    <i class="fa-solid fa-pen-to-square"></i> 編輯
-                                </button>
-                                <button onclick="event.stopPropagation(); deleteLesson(${lesson.id})" class="px-3 py-1 bg-rose-100 text-rose-700 hover:bg-rose-200 text-xs font-bold rounded-xl border border-rose-300 flex items-center gap-1 transition-colors">
-                                    <i class="fa-solid fa-trash-can"></i> 刪除
-                                </button>
-                            ` : ''}
-                            <div class="w-8 h-8 rounded-full bg-purple-50 flex items-center justify-center text-purple-600 shrink-0">
-                                <i id="lesson-icon-${lesson.id}" class="fa-solid fa-chevron-down text-xs transition-transform duration-300"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="lesson-detail-${lesson.id}" class="hidden border-t border-purple-100 p-6 bg-purple-50/20 space-y-4">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="bg-rose-50 p-4 rounded-3xl border-2 border-rose-200">
-                                <span class="text-xs font-black text-rose-600 block mb-1">❌ 普通範例 (Before)</span>
-                                <p class="text-xs md:text-sm text-slate-700 leading-relaxed">${lesson.before || '無範例'}</p>
-                            </div>
-                            <div class="bg-emerald-50 p-4 rounded-3xl border-2 border-emerald-200">
-                                <span class="text-xs font-black text-emerald-600 block mb-1">✨ 升級範例 (After)</span>
-                                <p class="text-xs md:text-sm text-slate-700 leading-relaxed font-bold">${lesson.after || '無範例'}</p>
-                            </div>
-                        </div>
-
-                        <div class="bg-white p-4 rounded-3xl border border-purple-200">
-                            <span class="text-xs font-black text-purple-800 block mb-1">💡 寫作技巧秘笈解讀：</span>
-                            <p class="text-xs md:text-sm text-slate-700 leading-relaxed whitespace-pre-line">${lesson.content}</p>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        function toggleLesson(id) {
-            const detail = document.getElementById(`lesson-detail-${id}`);
-            const icon = document.getElementById(`lesson-icon-${id}`);
-
-            if (detail.classList.contains('hidden')) {
-                detail.classList.remove('hidden');
-                icon.style.transform = 'rotate(180deg)';
-            } else {
-                detail.classList.add('hidden');
-                icon.style.transform = 'rotate(0deg)';
-            }
-        }
-
-        // 開啟新增課堂彈窗
-        function openAddLessonModal() {
-            document.getElementById('editing-lesson-id').value = '';
-            document.getElementById('lesson-modal-title').innerText = '發佈每週寫作課堂秘笈 👩‍🏫';
-            document.getElementById('lesson-submit-btn').innerText = '保存並發佈課堂 🎀';
-
-            document.getElementById('lesson-grade-select').value = currentGrade;
-            document.getElementById('lesson-week').value = '';
-            document.getElementById('lesson-badge').value = '';
-            document.getElementById('lesson-title').value = '';
-            document.getElementById('lesson-before').value = '';
-            document.getElementById('lesson-after').value = '';
-            document.getElementById('lesson-content').value = '';
-
-            const modal = document.getElementById('lesson-modal');
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                modal.classList.remove('opacity-0');
-                modal.querySelector('div').classList.remove('scale-95');
-                modal.querySelector('div').classList.add('scale-100');
-            }, 10);
-        }
-
-        // 開啟編輯課堂彈窗並帶入現有數據
-        function editLesson(id) {
-            const lessons = classroomLessonsByGrade[currentGrade] || [];
-            const lesson = lessons.find(l => l.id === id);
-            if (!lesson) return;
-
-            document.getElementById('editing-lesson-id').value = lesson.id;
-            document.getElementById('lesson-modal-title').innerText = '編輯寫作課堂秘笈 ✏️';
-            document.getElementById('lesson-submit-btn').innerText = '更新秘笈內容 🎀';
-
-            document.getElementById('lesson-grade-select').value = currentGrade;
-            document.getElementById('lesson-week').value = lesson.week;
-            document.getElementById('lesson-badge').value = lesson.badge;
-            document.getElementById('lesson-title').value = lesson.title;
-            document.getElementById('lesson-before').value = lesson.before;
-            document.getElementById('lesson-after').value = lesson.after;
-            document.getElementById('lesson-content').value = lesson.content;
-
-            const modal = document.getElementById('lesson-modal');
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                modal.classList.remove('opacity-0');
-                modal.querySelector('div').classList.remove('scale-95');
-                modal.querySelector('div').classList.add('scale-100');
-            }, 10);
-        }
-
-        function closeLessonModal() {
-            const modal = document.getElementById('lesson-modal');
-            modal.querySelector('div').classList.remove('scale-100');
-            modal.querySelector('div').classList.add('scale-95');
-            modal.classList.add('opacity-0');
-            setTimeout(() => modal.classList.add('hidden'), 300);
-        }
-
-        // 處理保存（包含新增與編輯更新）
-        function handleSaveLesson(e) {
-            e.preventDefault();
-            const editingId = document.getElementById('editing-lesson-id').value;
-            const grade = document.getElementById('lesson-grade-select').value;
-            const week = document.getElementById('lesson-week').value;
-            const badge = document.getElementById('lesson-badge').value;
-            const title = document.getElementById('lesson-title').value;
-            const before = document.getElementById('lesson-before').value;
-            const after = document.getElementById('lesson-after').value;
-            const content = document.getElementById('lesson-content').value;
-
-            if (!classroomLessonsByGrade[grade]) classroomLessonsByGrade[grade] = [];
-
-            if (editingId) {
-                // 原地編輯更新 (Update in place)
-                const lessonIndex = classroomLessonsByGrade[grade].findIndex(l => l.id == editingId);
-                if (lessonIndex !== -1) {
-                    classroomLessonsByGrade[grade][lessonIndex] = {
-                        id: Number(editingId),
-                        week,
-                        badge,
-                        title,
-                        before,
-                        after,
-                        content
-                    };
-                }
-            } else {
-                // 新增課堂
-                const newLesson = {
-                    id: Date.now(),
-                    week,
-                    badge,
-                    title,
-                    before,
-                    after,
-                    content
-                };
-                classroomLessonsByGrade[grade].unshift(newLesson);
-            }
-
-            closeLessonModal();
-            setGrade(grade);
-            switchTab('classroom');
-        }
-
-        function deleteLesson(id) {
-            if (confirm("確定要刪除這堂寫作技巧秘笈嗎？")) {
-                classroomLessonsByGrade[currentGrade] = classroomLessonsByGrade[currentGrade].filter(l => l.id !== id);
-                renderClassroom();
-            }
-        }
-
-        /* --------------------------------------------------------------------------
-           9. 學生佳作投稿與審核工作流
-           -------------------------------------------------------------------------- */
-        function filterSubmissions(category) {
-            currentSubFilter = category;
-            document.querySelectorAll('.sub-filter-btn').forEach(btn => {
-                btn.classList.remove('bg-purple-600', 'text-white');
-                btn.classList.add('bg-white', 'text-purple-700');
-            });
-            const activeBtn = document.getElementById(`btn-sub-${category}`);
-            if (activeBtn) {
-                activeBtn.classList.remove('bg-white', 'text-purple-700');
-                activeBtn.classList.add('bg-purple-600', 'text-white');
-            }
-            renderStudentWorks(category);
-        }
-
-        function renderStudentWorks(filter) {
-            const container = document.getElementById('student-works-container');
-            container.innerHTML = '';
-
-            const list = studentWorksByGrade[currentGrade] || [];
-            const filtered = list.filter(item => filter === 'all' || item.type === filter);
-
-            document.getElementById('submission-count').innerText = filtered.length;
-
-            if (filtered.length === 0) {
-                container.innerHTML = `<div class="col-span-full text-center py-12 text-purple-600 font-bold">這個年級尚無展示作品。投稿經老師審核後將會出現在這裡！🌸</div>`;
-                return;
-            }
-
-            filtered.forEach(work => {
-                const isWord = work.type === 'word';
-                const card = document.createElement('div');
-                card.className = "bg-white rounded-5xl p-6 border-4 border-purple-100 shadow-sm flex flex-col justify-between space-y-4 card-hover";
-
-                card.innerHTML = `
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-2.5">
-                                <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-purple-500 to-indigo-500 text-white font-bold flex items-center justify-center text-xs shadow-sm">
-                                    ${work.author.substring(0, 1)}
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-slate-800 text-xs md:text-sm">${work.author}</h4>
-                                    <span class="text-[10px] text-purple-400 font-bold">${work.grade} · ${work.time}</span>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <span class="text-xs font-bold px-3 py-1 rounded-full ${isWord ? 'bg-purple-100 text-purple-800 border border-purple-200' : 'bg-pink-100 text-pink-800 border border-pink-200'}">
-                                    ${isWord ? '✨ 好詞句' : '📖 佳作文章'}
-                                </span>
-                                ${isTeacherMode ? `
-                                    <button onclick="deleteStudentWork(${work.id})" class="px-2.5 py-1 bg-rose-100 hover:bg-rose-200 text-rose-700 text-xs font-bold rounded-xl border border-rose-300 flex items-center gap-1">
-                                        <i class="fa-solid fa-trash-can"></i> 刪除
-                                    </button>
-                                ` : ''}
-                            </div>
-                        </div>
-
-                        <div>
-                            <h3 class="font-black text-base text-slate-800 mb-2">${work.title}</h3>
-                            <p class="text-slate-600 text-xs md:text-sm leading-relaxed whitespace-pre-line bg-purple-50/40 p-4 rounded-3xl border border-purple-100">
-                                ${work.content}
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="pt-3 border-t border-purple-100 space-y-3">
-                        <div class="flex items-center justify-between text-xs">
-                            <button onclick="toggleLike(${work.id})" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full ${work.liked ? 'bg-purple-100 text-purple-700 font-bold' : 'bg-purple-50 text-slate-600 hover:bg-purple-100'} transition-colors">
-                                <i class="${work.liked ? 'fa-solid' : 'fa-regular'} fa-heart text-purple-600"></i>
-                                <span>${work.likes} 個愛心</span>
-                            </button>
-                            <span class="text-purple-400 font-bold">${work.comments.length} 則留言</span>
-                        </div>
-
-                        ${work.comments.length > 0 ? `
-                            <div class="space-y-1.5 bg-purple-50/50 p-3 rounded-2xl text-xs">
-                                ${work.comments.map(c => `
-                                    <div class="text-slate-600"><span class="font-bold text-purple-700">${c.name}:</span> ${c.text}</div>
-                                `).join('')}
-                            </div>
-                        ` : ''}
-
-                        <div class="flex gap-2">
-                            <input type="text" id="comment-input-${work.id}" placeholder="給同學留言鼓勵..." class="w-full text-xs px-3.5 py-2 rounded-2xl bg-purple-50/50 border border-purple-200 focus:border-purple-500 focus:bg-white focus:outline-none">
-                            <button onclick="addComment(${work.id})" class="px-3.5 py-2 rounded-2xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold shrink-0">
-                                留言 💬
-                            </button>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        // 渲染待審核學生投稿清單 (僅教師可見)
-        function renderPendingWorks() {
-            const container = document.getElementById('pending-works-container');
-            const pendingList = pendingWorksByGrade[currentGrade] || [];
-            document.getElementById('pending-count').innerText = pendingList.length;
-
-            if (!container) return;
-            container.innerHTML = '';
-
-            if (pendingList.length === 0) {
-                container.innerHTML = `<p class="col-span-full text-xs text-amber-700 font-bold">目前沒有待審核的 ${currentGrade} 學生投稿。</p>`;
-                return;
-            }
-
-            pendingList.forEach(work => {
-                const card = document.createElement('div');
-                card.className = "bg-white p-4 rounded-3xl border-2 border-amber-300 shadow-sm space-y-2 flex flex-col justify-between";
-                card.innerHTML = `
-                    <div>
-                        <div class="flex items-center justify-between text-xs mb-1">
-                            <span class="font-bold text-amber-900">${work.author} (${work.grade})</span>
-                            <span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full">待審核</span>
-                        </div>
-                        <h4 class="font-bold text-slate-800 text-xs">${work.title}</h4>
-                        <p class="text-xs text-slate-600 bg-amber-50/50 p-2 rounded-xl mt-1 line-clamp-3">${work.content}</p>
-                    </div>
-                    <div class="flex gap-2 pt-2 border-t border-amber-100">
-                        <button onclick="approvePost(${work.id})" class="w-1/2 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1 shadow-sm">
-                            <i class="fa-solid fa-check"></i> 通過發佈
-                        </button>
-                        <button onclick="rejectPost(${work.id})" class="w-1/2 py-1.5 bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1 shadow-sm">
-                            <i class="fa-solid fa-xmark"></i> 退回/刪除
-                        </button>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        // 教師審核通過
-        function approvePost(id) {
-            const pendingList = pendingWorksByGrade[currentGrade] || [];
-            const index = pendingList.findIndex(w => w.id === id);
-            if (index !== -1) {
-                const approvedWork = pendingList.splice(index, 1)[0];
-                approvedWork.time = '剛剛通過';
-                if (!studentWorksByGrade[currentGrade]) studentWorksByGrade[currentGrade] = [];
-                studentWorksByGrade[currentGrade].unshift(approvedWork);
-
-                renderPendingWorks();
-                renderStudentWorks(currentSubFilter);
-            }
-        }
-
-        // 教師退回/刪除待審核投稿
-        function rejectPost(id) {
-            if (confirm("確定要退回或刪除此份學生投稿嗎？")) {
-                pendingWorksByGrade[currentGrade] = (pendingWorksByGrade[currentGrade] || []).filter(w => w.id !== id);
-                renderPendingWorks();
-            }
-        }
-
-        function toggleLike(id) {
-            const list = studentWorksByGrade[currentGrade] || [];
-            const work = list.find(w => w.id === id);
-            if (work) {
-                work.liked ? work.likes-- : work.likes++;
-                work.liked = !work.liked;
-                renderStudentWorks(currentSubFilter);
-            }
-        }
-
-        function addComment(id) {
-            const input = document.getElementById(`comment-input-${id}`);
-            const text = input.value.trim();
-            if (!text) return;
-
-            const list = studentWorksByGrade[currentGrade] || [];
-            const work = list.find(w => w.id === id);
-            if (work) {
-                work.comments.push({ name: '同班同學', text: text });
-                input.value = '';
-                renderStudentWorks(currentSubFilter);
-            }
-        }
-
-        function deleteStudentWork(id) {
-            if (confirm("確定要刪除這份學生作品投稿嗎？")) {
-                studentWorksByGrade[currentGrade] = studentWorksByGrade[currentGrade].filter(w => w.id !== id);
-                renderStudentWorks(currentSubFilter);
-            }
-        }
-
-        function openPublishModal() {
-            const modal = document.getElementById('publish-modal');
-            document.getElementById('author-grade').value = currentGrade;
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                modal.classList.remove('opacity-0');
-                modal.querySelector('div').classList.remove('scale-95');
-                modal.querySelector('div').classList.add('scale-100');
-            }, 10);
-        }
-
-        function closePublishModal() {
-            const modal = document.getElementById('publish-modal');
-            modal.querySelector('div').classList.remove('scale-100');
-            modal.querySelector('div').classList.add('scale-95');
-            modal.classList.add('opacity-0');
-            setTimeout(() => modal.classList.add('hidden'), 300);
-        }
-
-        // 學生投稿進入待審核隊列 pendingWorksByGrade
-        function handleFormSubmit(e) {
-            e.preventDefault();
-            const name = document.getElementById('author-name').value;
-            const grade = document.getElementById('author-grade').value;
-            const type = document.querySelector('input[name="work-type"]:checked').value;
-            const title = document.getElementById('work-title').value;
-            const content = document.getElementById('work-content').value;
-
-            const newPendingWork = {
-                id: Date.now(),
-                author: name,
-                grade: `${grade} (${grade === 'G4' ? '小四' : grade === 'G5' ? '小五' : '小六'})`,
-                gradeCode: grade,
-                type: type,
-                title: title,
-                content: content,
-                likes: 0,
-                liked: false,
-                comments: [],
-                time: '待審核'
-            };
-
-            if (!pendingWorksByGrade[grade]) pendingWorksByGrade[grade] = [];
-            pendingWorksByGrade[grade].unshift(newPendingWork);
-
-            document.getElementById('submission-form').reset();
-            closePublishModal();
-
-            alert("投稿成功！您的作品已提交給老師審核，審核通過後將會在展示區發佈！🌸");
-
-            setGrade(grade);
-            switchTab('share');
-        }
-    </script>
+      }
+
+      // 2. 渲染已通過公開作品區
+      if (approvedList.length === 0) {
+        container.innerHTML = `
+          <div class="empty-card">
+            🌟 這裡還沒有同學公開分享的作品喔！<br>點擊右上角「我要投稿分享」提交你的佳作吧！（投稿後需經老師審核）
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = approvedList.map((item, index) => `
+        <div class="post-card">
+          ${isTeacherMode ? `<div class="card-actions"><button class="delete-btn" onclick="deleteApprovedPost(${index})">🗑️ 刪除</button></div>` : ''}
+          <h3>${item.title} <small style="font-size:0.9rem; color:#8e24aa;">[${item.type}] - ${item.name} 同學</small></h3>
+          <p style="font-size:1.15rem; line-height:1.6; color:#311b92;">${item.content}</p>
+        </div>
+      `).join('');
+    }
+
+    // 教師審核：通過投稿
+    function approvePost(index) {
+      const item = appData.pendingPosts[currentGrade].splice(index, 1)[0];
+      appData.approvedPosts[currentGrade].unshift(item);
+      renderPosts();
+    }
+
+    // 教師審核：拒絕/刪除待審核投稿
+    function rejectPost(index) {
+      if (confirm("確定要拒絕並刪除這篇投稿嗎？")) {
+        appData.pendingPosts[currentGrade].splice(index, 1);
+        renderPosts();
+      }
+    }
+
+    // 刪除已通過作品
+    function deleteApprovedPost(index) {
+      if (confirm("確定要刪除這篇已發佈的作品嗎？")) {
+        appData.approvedPosts[currentGrade].splice(index, 1);
+        renderPosts();
+      }
+    }
+
+    // 學生提交投稿（進入待審核狀態）
+    function saveStudentPost(event) {
+      if (event) event.stopPropagation();
+      const name = document.getElementById('input-student-name').value.trim();
+      const type = document.getElementById('input-post-type').value;
+      const title = document.getElementById('input-post-title').value.trim();
+      const content = document.getElementById('input-post-content').value.trim();
+
+      if (!name || !title || !content) {
+        alert("請完整填寫名字、標題與內容！");
+        return;
+      }
+
+      appData.pendingPosts[currentGrade].unshift({ name, type, title, content });
+      closeModal('submit-modal');
+      alert("投稿提交成功！已送交老師審核，審核通過後即會發佈顯示喔！");
+      renderPosts();
+
+      // 清空表單
+      document.getElementById('input-student-name').value = '';
+      document.getElementById('input-post-title').value = '';
+      document.getElementById('input-post-content').value = '';
+    }
+
+    // 彈窗控制
+    function openSubmitModal(event) { if (event) event.stopPropagation(); document.getElementById('submit-modal').style.display = 'flex'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+    // 初始化頁面
+    window.onload = function() {
+      initCalendarAndDailyWord();
+    };
+  </script>
 </body>
 </html>
