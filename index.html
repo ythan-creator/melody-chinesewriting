@@ -7,30 +7,9 @@
   <!-- Google Fonts 楷體載入，確保各裝置顯示標準標楷體 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&display=swap" rel="stylesheet">
-  
-  <!-- 載入 Firebase 雲端資料庫 SDK (使用模組版本) -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, push, onValue, set, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
-    // 免費公共 Firebase 即時雲端資料庫配置
-    const firebaseConfig = {
-      databaseURL: "https://melody-bag-default-rtdb.firebaseio.com"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    // 將 Firebase 函數掛載到全域 window 上供網頁調用
-    window.db = db;
-    window.dbRef = ref;
-    window.dbPush = push;
-    window.dbOnValue = onValue;
-    window.dbSet = set;
-    window.dbRemove = remove;
-  </script>
-
+  <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&amp;display=swap" rel="stylesheet">
+  <script src="config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     /* 全站字體強制設置為標準標楷體 */
     * {
@@ -476,6 +455,37 @@
       gap: 10px;
       margin-top: 20px;
     }
+
+    .setup-notice, .app-notice {
+      max-width: 950px;
+      margin: 15px auto 0;
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    .setup-notice {
+      background: #fff3e0;
+      border: 2px solid #ffb74d;
+      color: #e65100;
+    }
+
+    .app-notice {
+      display: none;
+      background: #ffebee;
+      border: 2px solid #ef9a9a;
+      color: #b71c1c;
+    }
+
+    .auth-user {
+      display: none;
+      color: #4a148c;
+      font-size: 0.95rem;
+      width: 100%;
+      text-align: center;
+      margin-top: 4px;
+    }
   </style>
 </head>
 <body>
@@ -539,9 +549,15 @@
     <div class="header-sub">吉伊卡哇陪伴學習 · 香港小學中文寫作平台</div>
     <div class="nav-controls">
       <button class="btn" onclick="showGateway()">🌸 切換年級</button>
-      <button class="btn btn-teacher" id="btn-toggle-teacher" onclick="handleTeacherToggle()">👩‍🏫 切換教師模式 <span id="teacher-status">(關閉)</span></button>
+      <button class="btn btn-teacher" id="btn-toggle-teacher" onclick="handleTeacherToggle()">👩‍🏫 教師登入 <span id="teacher-status">(未登入)</span></button>
+      <div class="auth-user" id="auth-user"></div>
     </div>
   </header>
+
+  <div class="setup-notice" id="setup-notice" style="display: none;">
+    ⚙️ 尚未設定 Supabase。請按照部署指南填入專案網址和公開匿名金鑰，網站才可保存課堂及投稿資料。
+  </div>
+  <div class="app-notice" id="app-notice" role="alert"></div>
 
   <div class="container">
     
@@ -610,12 +626,17 @@
 
   </div>
 
-  <!-- 彈窗：教師密碼驗證 -->
+  <!-- 彈窗：教師登入 -->
   <div class="modal" id="password-modal">
     <div class="modal-content">
-      <div class="modal-title">👩‍🏫 請輸入教師管理密碼</div>
+      <div class="modal-title">👩‍🏫 教師登入</div>
       <div class="form-group">
-        <input type="password" id="input-teacher-pwd" placeholder="請輸入密碼">
+        <label>教師電郵：</label>
+        <input type="email" id="input-teacher-email" placeholder="teacher@example.com" autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label>密碼：</label>
+        <input type="password" id="input-teacher-pwd" placeholder="請輸入密碼" autocomplete="current-password">
       </div>
       <div class="modal-btns">
         <button class="btn" onclick="closeModal('password-modal')">取消</button>
@@ -628,22 +649,22 @@
   <div class="modal" id="lesson-modal">
     <div class="modal-content">
       <div class="modal-title" id="lesson-modal-title">👩‍🏫 發佈寫作課堂秘笈</div>
-      <input type="hidden" id="editing-lesson-id" value="">
+      <input type="hidden" id="editing-lesson-index" value="-1">
       <div class="form-group">
         <label>課堂主題：</label>
-        <input type="text" id="input-lesson-title" placeholder="例如：如何把人物寫得栩栩如生">
+        <input type="text" id="input-lesson-title" maxlength="120" placeholder="例如：如何把人物寫得栩栩如生">
       </div>
       <div class="form-group">
         <label>寫作技巧點撥：</label>
-        <input type="text" id="input-lesson-tech" placeholder="例如：動作拆解法 + 五感描寫">
+        <input type="text" id="input-lesson-tech" maxlength="200" placeholder="例如：動作拆解法 + 五感描寫">
       </div>
       <div class="form-group">
         <label>修改前（普通範例）：</label>
-        <textarea id="input-lesson-before" rows="2" placeholder="小明很生氣。"></textarea>
+        <textarea id="input-lesson-before" rows="2" maxlength="1000" placeholder="小明很生氣。"></textarea>
       </div>
       <div class="form-group">
         <label>修改後（升級範例）：</label>
-        <textarea id="input-lesson-after" rows="3" placeholder="小明雙眉緊鎖，氣得面紅耳赤，一把摔下課本..."></textarea>
+        <textarea id="input-lesson-after" rows="3" maxlength="2000" placeholder="小明雙眉緊鎖，氣得面紅耳赤，一把摔下課本..."></textarea>
       </div>
       <div class="modal-btns">
         <button class="btn" onclick="closeModal('lesson-modal')">取消</button>
@@ -661,7 +682,7 @@
       </div>
       <div class="form-group">
         <label>學生姓名：</label>
-        <input type="text" id="input-student-name" placeholder="請輸入你的名字">
+        <input type="text" id="input-student-name" maxlength="80" placeholder="請輸入你的名字">
       </div>
       <div class="form-group">
         <label>分享類別：</label>
@@ -672,11 +693,11 @@
       </div>
       <div class="form-group">
         <label>作品標題 / 詞語：</label>
-        <input type="text" id="input-post-title" placeholder="例如：《一次難忘的郊遊》或【繁星點點】">
+        <input type="text" id="input-post-title" maxlength="120" placeholder="例如：《一次難忘的郊遊》或【繁星點點】">
       </div>
       <div class="form-group">
         <label>作品內容：</label>
-        <textarea id="input-post-content" rows="4" placeholder="請寫下你的好句或文章片段..."></textarea>
+        <textarea id="input-post-content" rows="4" maxlength="5000" placeholder="請寫下你的好句或文章片段..."></textarea>
       </div>
       <div class="modal-btns">
         <button class="btn" onclick="closeModal('submit-modal')">取消</button>
@@ -686,212 +707,362 @@
   </div>
 
   <script>
-    // 狀態管理
+    const SUPABASE_URL = typeof window.SUPABASE_URL === 'string' ? window.SUPABASE_URL.trim().replace(/\/+$/, '') : '';
+    const SUPABASE_ANON_KEY = typeof window.SUPABASE_ANON_KEY === 'string' ? window.SUPABASE_ANON_KEY.trim() : '';
+    const supabaseConfigured = SUPABASE_URL.startsWith('https://') && !SUPABASE_URL.includes('YOUR_PROJECT') && SUPABASE_ANON_KEY.length > 0 && !SUPABASE_ANON_KEY.includes('YOUR_SUPABASE');
+    const supabaseLibraryAvailable = Boolean(window.supabase && typeof window.supabase.createClient === 'function');
+    let supabaseClient = null;
+    if (supabaseConfigured && supabaseLibraryAvailable) {
+      try {
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      } catch (error) {
+        console.error('建立 Supabase 連線失敗', error);
+      }
+    }
     let currentGrade = 'G4';
+    let currentUser = null;
     let isTeacherMode = false;
-    const TEACHER_PWD = "hanyutong";
-
-    // 每日輪換詞句庫
+    let realtimeChannel = null;
+    let dataLoadSequence = 0;
+    let dailyDateKey = '';
+    let dailyRefreshTimer = null;
+    let dataRefreshTimer = null;
+    const appData = {
+      lessons: { G4: [], G5: [], G6: [] },
+      approvedPosts: { G4: [], G5: [], G6: [] },
+      pendingPosts: { G4: [], G5: [], G6: [] }
+    };
     const dailyPool = {
       G4: [
-        { word: "【繁星點點】", sentence: "夜幕降臨，天空像鋪上了一塊深藍色的絨布，上面綴滿了繁星點點，眨著好奇的眼睛。" },
-        { word: "【喜出望外】", sentence: "得知自己的文章獲選登在校刊上，姐姐喜出望外，高興得手舞足蹈。" },
-        { word: "【生機勃勃】", sentence: "陽春三月，花園裡的小草探出頭來，百花齊放，到處展現出一派生機勃勃的景象。" }
+        { word: '【繁星點點】', sentence: '夜幕降臨，天空像鋪上了一塊深藍色的絨布，上面綴滿了繁星點點，眨著好奇的眼睛。' },
+        { word: '【喜出望外】', sentence: '得知自己的文章獲選登在校刊上，姐姐喜出望外，高興得手舞足蹈。' },
+        { word: '【生機勃勃】', sentence: '陽春三月，花園裡的小草探出頭來，百花齊放，到處展現出一派生機勃勃的景象。' }
       ],
       G5: [
-        { word: "【驚慌失措】", sentence: "突如其來的暴雨讓路上的行人驚慌失措，大家紛紛拿起手邊的物品遮擋，狼狽地尋找避雨的地方。" },
-        { word: "【目不轉睛】", sentence: "魔術師在台上進行精彩的表演，台下的同學們都目不轉睛地盯著手部動作，生怕錯過任何細節。" },
-        { word: "【栩栩如生】", sentence: "畫展上的那幅駿馬圖畫得極為傳神，馬兒矯健的身姿彷彿隨時會躍出畫框，真是栩栩如生。" }
+        { word: '【驚慌失措】', sentence: '突如其來的暴雨讓路上的行人驚慌失措，大家紛紛拿起手邊的物品遮擋，狼狽地尋找避雨的地方。' },
+        { word: '【目不轉睛】', sentence: '魔術師在台上進行精彩的表演，台下的同學們都目不轉睛地盯著手部動作，生怕錯過任何細節。' },
+        { word: '【栩栩如生】', sentence: '畫展上的那幅駿馬圖畫得極為傳神，馬兒矯健的身姿彷彿隨時會躍出畫框，真是栩栩如生。' }
       ],
       G6: [
-        { word: "【跌宕起伏】", sentence: "這部小說的情節跌宕起伏，扣人心弦，讓讀者時而緊張得屏息凝神，時而感動得熱淚盈眶。" },
-        { word: "【耐人尋味】", sentence: "老師語重心長地講完這個寓言故事後，全班陷入了沉思，其中的哲理確實耐人尋味。" },
-        { word: "【情景交融】", sentence: "作者在文章中將對家鄉景物的細緻描繪與離鄉的思念之情結合得天衣無縫，達到了情景交融的境界。" }
+        { word: '【跌宕起伏】', sentence: '這部小說的情節跌宕起伏，扣人心弦，讓讀者時而緊張得屏息凝神，時而感動得熱淚盈眶。' },
+        { word: '【耐人尋味】', sentence: '老師語重心長地講完這個寓言故事後，全班陷入了沉思，其中的哲理確實耐人尋味。' },
+        { word: '【情景交融】', sentence: '作者在文章中將對家鄉景物的細緻描繪與離鄉的思念之情結合得天衣無縫，達到了情景交融的境界。' }
       ]
     };
 
-    // 雲端數據即時同步
-    let currentLessons = {};
-    let currentApprovedPosts = {};
-    let currentPendingPosts = {};
-
-    function listenFirebaseData() {
-      if (!window.db) {
-        setTimeout(listenFirebaseData, 200);
-        return;
-      }
-
-      // 監聽寫作課堂
-      window.dbOnValue(window.dbRef(window.db, `lessons/${currentGrade}`), (snapshot) => {
-        currentLessons = snapshot.val() || {};
-        renderLessons();
-      });
-
-      // 監聽公開作品
-      window.dbOnValue(window.dbRef(window.db, `approvedPosts/${currentGrade}`), (snapshot) => {
-        currentApprovedPosts = snapshot.val() || {};
-        renderPosts();
-      });
-
-      // 監聽待審核作品
-      window.dbOnValue(window.dbRef(window.db, `pendingPosts/${currentGrade}`), (snapshot) => {
-        currentPendingPosts = snapshot.val() || {};
-        renderPosts();
-      });
-    }
-
-    // 全局點擊粒子特效
-    document.addEventListener('click', function(e) {
-      createDissolveParticles(e.clientX, e.clientY);
+    document.addEventListener('click', function(event) {
+      createDissolveParticles(event.clientX, event.clientY);
     });
 
     function createDissolveParticles(x, y) {
       const colors = ['#ab47bc', '#ce93d8', '#e1bee7', '#f8bbd0', '#ffd54f'];
-      for (let i = 0; i < 12; i++) {
+      for (let index = 0; index < 12; index += 1) {
         const particle = document.createElement('div');
         particle.className = 'particle';
         document.body.appendChild(particle);
-
         const size = Math.random() * 8 + 4;
         particle.style.width = size + 'px';
         particle.style.height = size + 'px';
         particle.style.background = colors[Math.floor(Math.random() * colors.length)];
         particle.style.left = x + 'px';
         particle.style.top = y + 'px';
-
         const angle = Math.random() * Math.PI * 2;
         const velocity = Math.random() * 60 + 20;
-        const dx = Math.cos(angle) * velocity + 'px';
-        const dy = Math.sin(angle) * velocity + 'px';
-
-        particle.style.setProperty('--dx', dx);
-        particle.style.setProperty('--dy', dy);
-
+        particle.style.setProperty('--dx', Math.cos(angle) * velocity + 'px');
+        particle.style.setProperty('--dy', Math.sin(angle) * velocity + 'px');
         setTimeout(() => particle.remove(), 700);
       }
     }
 
-    // 初始化日曆
-    function initCalendarAndDailyWord() {
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = now.getMonth() + 1;
-      const date = now.getDate();
-      const days = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
-      
-      document.getElementById('cal-year-month').innerText = `${year}年${month}月`;
-      document.getElementById('cal-day').innerText = date < 10 ? '0' + date : date;
-      document.getElementById('cal-week').innerText = days[now.getDay()];
-
-      const dayOffset = Math.floor(now.getTime() / (1000 * 60 * 60 * 24));
-      const pool = dailyPool[currentGrade];
-      const todayIndex = dayOffset % pool.length;
-
-      document.getElementById('daily-word').innerText = pool[todayIndex].word;
-      document.getElementById('daily-sentence').innerText = pool[todayIndex].sentence;
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, function(character) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character];
+      });
     }
 
-    // 選擇年級
+    function showNotice(message) {
+      const notice = document.getElementById('app-notice');
+      notice.textContent = message;
+      notice.style.display = 'block';
+    }
+
+    function clearNotice() {
+      const notice = document.getElementById('app-notice');
+      notice.textContent = '';
+      notice.style.display = 'none';
+    }
+
+    function errorMessage(error) {
+      return error && error.message ? error.message : '請稍後再試。';
+    }
+
+    function reportError(action, error) {
+      console.error(action, error);
+      showNotice(action + '失敗，' + errorMessage(error));
+    }
+
+    function getHongKongDateParts(date = new Date()) {
+      const parts = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Asia/Hong_Kong',
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric'
+      }).formatToParts(date);
+      const values = {};
+      parts.forEach((part) => {
+        if (part.type !== 'literal') values[part.type] = Number(part.value);
+      });
+      return values;
+    }
+
+    function getHongKongDateKey(parts = getHongKongDateParts()) {
+      return [parts.year, String(parts.month).padStart(2, '0'), String(parts.day).padStart(2, '0')].join('-');
+    }
+
+    function initCalendarAndDailyWord() {
+      const parts = getHongKongDateParts();
+      const dateKey = getHongKongDateKey(parts);
+      const weekdayNames = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+      const weekday = new Date(Date.UTC(parts.year, parts.month - 1, parts.day)).getUTCDay();
+      const pool = dailyPool[currentGrade] || dailyPool.G4;
+      const dayOffset = Math.floor(Date.UTC(parts.year, parts.month - 1, parts.day) / 86400000);
+      const todayIndex = ((dayOffset % pool.length) + pool.length) % pool.length;
+      const dailyItem = pool[todayIndex];
+      document.getElementById('cal-year-month').innerText = `${parts.year}年${parts.month}月`;
+      document.getElementById('cal-day').innerText = String(parts.day).padStart(2, '0');
+      document.getElementById('cal-week').innerText = weekdayNames[weekday];
+      document.getElementById('daily-word').innerText = dailyItem.word;
+      document.getElementById('daily-sentence').innerText = dailyItem.sentence;
+      dailyDateKey = dateKey;
+    }
+
+    function startDailyRefresh() {
+      if (dailyRefreshTimer) clearInterval(dailyRefreshTimer);
+      dailyRefreshTimer = setInterval(function() {
+        const dateKey = getHongKongDateKey();
+        if (dateKey !== dailyDateKey) initCalendarAndDailyWord();
+      }, 30000);
+    }
+
+    function startDataRefresh() {
+      if (dataRefreshTimer) clearInterval(dataRefreshTimer);
+      if (!supabaseClient) return;
+      dataRefreshTimer = setInterval(function() {
+        const dashboard = document.getElementById('main-dashboard');
+        if (dashboard && dashboard.style.display !== 'none') loadCurrentGradeData();
+      }, 60000);
+    }
+
+    function emptyAppDataForGrade() {
+      appData.lessons[currentGrade] = [];
+      appData.approvedPosts[currentGrade] = [];
+      appData.pendingPosts[currentGrade] = [];
+    }
+
+    function normalizeLesson(row) {
+      return {
+        id: row.id,
+        title: row.title || '',
+        tech: row.tech || '',
+        before: row.before_text || '',
+        after: row.after_text || ''
+      };
+    }
+
+    function normalizePost(row) {
+      return {
+        id: row.id,
+        name: row.name || '',
+        type: row.type || '好詞好句',
+        title: row.title || '',
+        content: row.content || '',
+        status: row.status
+      };
+    }
+
+    async function loadCurrentGradeData() {
+      if (!supabaseClient) {
+        renderLessons();
+        renderPosts();
+        return;
+      }
+      const sequence = ++dataLoadSequence;
+      const lessonsRequest = supabaseClient.from('lessons').select('id,grade,title,tech,before_text,after_text,created_at,updated_at').eq('grade', currentGrade).order('created_at', { ascending: false });
+      const postsRequest = supabaseClient.from('posts').select('id,grade,name,type,title,content,status,created_at,reviewed_at').eq('grade', currentGrade).order('created_at', { ascending: false });
+      let lessonsResult;
+      let postsResult;
+      try {
+        [lessonsResult, postsResult] = await Promise.all([lessonsRequest, postsRequest]);
+      } catch (error) {
+        reportError('載入雲端資料', error);
+        return;
+      }
+      if (sequence !== dataLoadSequence) return;
+      if (lessonsResult.error) {
+        reportError('載入寫作秘笈', lessonsResult.error);
+      }
+      if (postsResult.error) {
+        reportError('載入學生投稿', postsResult.error);
+      }
+      if (lessonsResult.error || postsResult.error) return;
+      appData.lessons[currentGrade] = (lessonsResult.data || []).map(normalizeLesson);
+      const posts = (postsResult.data || []).map(normalizePost);
+      appData.approvedPosts[currentGrade] = posts.filter((post) => post.status === 'approved');
+      appData.pendingPosts[currentGrade] = isTeacherMode ? posts.filter((post) => post.status === 'pending') : [];
+      renderLessons();
+      renderPosts();
+    }
+
+    function subscribeToCurrentGrade() {
+      if (!supabaseClient) return;
+      if (realtimeChannel) supabaseClient.removeChannel(realtimeChannel);
+      realtimeChannel = supabaseClient.channel('writing-bag-' + currentGrade)
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'lessons', filter: 'grade=eq.' + currentGrade }, function() { loadCurrentGradeData(); })
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'posts', filter: 'grade=eq.' + currentGrade }, function() { loadCurrentGradeData(); })
+        .subscribe();
+    }
+
     function selectGrade(grade, event) {
       if (event) event.stopPropagation();
+      if (!dailyPool[grade]) return;
       currentGrade = grade;
       document.getElementById('grade-gateway').style.display = 'none';
       document.getElementById('main-dashboard').style.display = 'block';
-      
-      const titleMap = { G4: "小四 (G4) 寫作百寶袋", G5: "小五 (G5) 寫作百寶袋", G6: "小六 (G6) 寫作百寶袋" };
+      const titleMap = { G4: '小四 (G4) 寫作百寶袋', G5: '小五 (G5) 寫作百寶袋', G6: '小六 (G6) 寫作百寶袋' };
       document.getElementById('current-grade-title').innerText = titleMap[grade];
-
       initCalendarAndDailyWord();
-      listenFirebaseData();
+      emptyAppDataForGrade();
+      renderLessons();
+      renderPosts();
+      subscribeToCurrentGrade();
+      loadCurrentGradeData();
     }
 
-    // 返航首頁
     function showGateway() {
       document.getElementById('grade-gateway').style.display = 'block';
       document.getElementById('main-dashboard').style.display = 'none';
     }
 
-    // 教師模式切換
     function handleTeacherToggle() {
-      if (!isTeacherMode) {
-        document.getElementById('password-modal').style.display = 'flex';
-        document.getElementById('input-teacher-pwd').value = '';
-      } else {
-        isTeacherMode = false;
-        updateTeacherUI();
+      if (!supabaseClient) {
+        showNotice('請先在 index.html 填入 Supabase 專案網址和公開匿名金鑰。');
+        return;
       }
+      if (isTeacherMode) {
+        supabaseClient.auth.signOut().catch((error) => reportError('登出', error));
+        return;
+      }
+      document.getElementById('input-teacher-email').value = '';
+      document.getElementById('input-teacher-pwd').value = '';
+      document.getElementById('password-modal').style.display = 'flex';
     }
 
-    function verifyPassword(event) {
-      if (event) event.stopPropagation();
-      const pwd = document.getElementById('input-teacher-pwd').value;
-      if (pwd === TEACHER_PWD) {
-        isTeacherMode = true;
-        closeModal('password-modal');
-        updateTeacherUI();
-      } else {
-        alert("密碼錯誤，請重新輸入！");
-      }
+    async function isTeacherUser(user) {
+      if (!user || !supabaseClient) return false;
+      const result = await supabaseClient.from('teacher_users').select('user_id').eq('user_id', user.id).maybeSingle();
+      if (result.error) throw result.error;
+      return Boolean(result.data);
     }
 
     function updateTeacherUI() {
-      const btn = document.getElementById('btn-toggle-teacher');
+      const button = document.getElementById('btn-toggle-teacher');
       const statusText = document.getElementById('teacher-status');
-
+      const userText = document.getElementById('auth-user');
       if (isTeacherMode) {
-        statusText.innerText = "(已開啟)";
-        btn.classList.add('btn-teacher-active');
+        statusText.innerText = '(已登入)';
+        button.firstChild.textContent = '👩‍🏫 教師登出 ';
+        button.classList.add('btn-teacher-active');
         document.getElementById('teacher-lesson-add-area').style.display = 'block';
         document.getElementById('teacher-pending-section').style.display = 'block';
+        userText.innerText = currentUser && currentUser.email ? '已登入：' + currentUser.email : '';
+        userText.style.display = 'block';
       } else {
-        statusText.innerText = "(關閉)";
-        btn.classList.remove('btn-teacher-active');
+        statusText.innerText = '(未登入)';
+        button.firstChild.textContent = '👩‍🏫 教師登入 ';
+        button.classList.remove('btn-teacher-active');
         document.getElementById('teacher-lesson-add-area').style.display = 'none';
         document.getElementById('teacher-pending-section').style.display = 'none';
+        userText.innerText = '';
+        userText.style.display = 'none';
+        appData.pendingPosts[currentGrade] = [];
       }
-
       renderLessons();
       renderPosts();
     }
 
-    // 渲染寫作課堂
-    function renderLessons() {
-      const container = document.getElementById('lessons-container');
-      const keys = Object.keys(currentLessons);
-
-      if (keys.length === 0) {
-        container.innerHTML = `
-          <div class="empty-card">
-            📖 目前老師尚未發佈本週寫作課堂。<br>
-            <small style="font-size:0.95rem; color:#8e24aa;">(請教師開啟右上角「教師編輯模式」進行課程編寫)</small>
-          </div>
-        `;
+    async function syncSession(session) {
+      currentUser = session ? session.user : null;
+      if (!session) {
+        isTeacherMode = false;
+        updateTeacherUI();
+        await loadCurrentGradeData();
+        subscribeToCurrentGrade();
         return;
       }
+      try {
+        isTeacherMode = await isTeacherUser(session.user);
+      } catch (error) {
+        isTeacherMode = false;
+        reportError('驗證教師帳戶', error);
+      }
+      updateTeacherUI();
+      await loadCurrentGradeData();
+      subscribeToCurrentGrade();
+    }
 
-      container.innerHTML = keys.map((key) => {
-        const item = currentLessons[key];
-        return `
-          <div class="lesson-card">
-            ${isTeacherMode ? `
-              <div class="card-actions">
-                <button class="btn-edit" onclick="openEditLessonModal('${key}', event)">✏️ 編輯</button>
-                <button class="delete-btn" onclick="deleteLesson('${key}')">🗑️ 刪除</button>
-              </div>
-            ` : ''}
-            <h3>${item.title}</h3>
-            <span class="technique-tag">💡 技巧：${item.tech}</span>
-            <div class="example-box"><strong>❌ 普通描寫：</strong>${item.before}</div>
-            <div class="example-box" style="background-color:#e8f5e9; border-left-color:#66bb6a;"><strong>✨ 升級好句：</strong>${item.after}</div>
-          </div>
-        `;
+    async function verifyPassword(event) {
+      if (event) event.stopPropagation();
+      if (!supabaseClient) return;
+      const email = document.getElementById('input-teacher-email').value.trim();
+      const password = document.getElementById('input-teacher-pwd').value;
+      if (!email || !password) {
+        showNotice('請輸入教師電郵和密碼。');
+        return;
+      }
+      let result;
+      try {
+        result = await supabaseClient.auth.signInWithPassword({ email, password });
+      } catch (error) {
+        reportError('登入', error);
+        return;
+      }
+      if (result.error) {
+        showNotice('登入失敗，請檢查電郵和密碼。');
+        return;
+      }
+      try {
+        if (!(await isTeacherUser(result.data.user))) {
+          await supabaseClient.auth.signOut();
+          showNotice('此帳戶尚未獲授權為教師。');
+          return;
+        }
+      } catch (error) {
+        reportError('驗證教師帳戶', error);
+        return;
+      }
+      clearNotice();
+      closeModal('password-modal');
+      await syncSession(result.data.session);
+    }
+
+    function renderLessons() {
+      const container = document.getElementById('lessons-container');
+      const list = appData.lessons[currentGrade] || [];
+      if (list.length === 0) {
+        container.innerHTML = '<div class="empty-card">📖 目前老師尚未發佈本週寫作課堂。<br><small style="font-size:0.95rem; color:#8e24aa;">（教師登入後可以新增課堂秘笈）</small></div>';
+        return;
+      }
+      container.innerHTML = list.map((item, index) => {
+        const actions = isTeacherMode ? '<div class="card-actions"><button class="btn-edit" onclick="openEditLessonModal(' + index + ', event)">✏️ 編輯</button><button class="delete-btn" onclick="deleteLesson(' + index + ')">🗑️ 刪除</button></div>' : '';
+        return '<div class="lesson-card">' + actions + '<h3>' + escapeHtml(item.title) + '</h3><span class="technique-tag">💡 技巧：' + escapeHtml(item.tech) + '</span><div class="example-box"><strong>❌ 普通描寫：</strong>' + escapeHtml(item.before) + '</div><div class="example-box" style="background-color:#e8f5e9; border-left-color:#66bb6a;"><strong>✨ 升級好句：</strong>' + escapeHtml(item.after) + '</div></div>';
       }).join('');
     }
 
     function openAddLessonModal(event) {
       if (event) event.stopPropagation();
-      document.getElementById('lesson-modal-title').innerText = "👩‍🏫 發佈寫作課堂秘笈";
-      document.getElementById('editing-lesson-id').value = "";
+      if (!isTeacherMode) return;
+      document.getElementById('lesson-modal-title').innerText = '👩‍🏫 發佈寫作課堂秘笈';
+      document.getElementById('editing-lesson-index').value = '-1';
       document.getElementById('input-lesson-title').value = '';
       document.getElementById('input-lesson-tech').value = '';
       document.getElementById('input-lesson-before').value = '';
@@ -899,13 +1070,13 @@
       document.getElementById('lesson-modal').style.display = 'flex';
     }
 
-    function openEditLessonModal(key, event) {
+    function openEditLessonModal(index, event) {
       if (event) event.stopPropagation();
-      const item = currentLessons[key];
+      if (!isTeacherMode) return;
+      const item = (appData.lessons[currentGrade] || [])[index];
       if (!item) return;
-
-      document.getElementById('lesson-modal-title').innerText = "✏️ 編輯寫作課堂秘笈";
-      document.getElementById('editing-lesson-id').value = key;
+      document.getElementById('lesson-modal-title').innerText = '✏️ 編輯寫作課堂秘笈';
+      document.getElementById('editing-lesson-index').value = String(index);
       document.getElementById('input-lesson-title').value = item.title;
       document.getElementById('input-lesson-tech').value = item.tech;
       document.getElementById('input-lesson-before').value = item.before;
@@ -913,133 +1084,172 @@
       document.getElementById('lesson-modal').style.display = 'flex';
     }
 
-    function deleteLesson(key) {
-      if (confirm("確定要刪除這堂寫作秘笈嗎？")) {
-        window.dbRemove(window.dbRef(window.db, `lessons/${currentGrade}/${key}`));
+    async function deleteLesson(index) {
+      if (!isTeacherMode || !supabaseClient) return;
+      const item = (appData.lessons[currentGrade] || [])[index];
+      if (!item || !confirm('確定要刪除這堂寫作秘笈嗎？')) return;
+      const result = await supabaseClient.from('lessons').delete().eq('id', item.id);
+      if (result.error) {
+        reportError('刪除課堂', result.error);
+        return;
       }
+      await loadCurrentGradeData();
     }
 
-    // 渲染學生投稿
     function renderPosts() {
       const container = document.getElementById('posts-container');
       const pendingContainer = document.getElementById('pending-posts-container');
-      
-      const approvedKeys = Object.keys(currentApprovedPosts);
-      const pendingKeys = Object.keys(currentPendingPosts);
-
+      const approvedList = appData.approvedPosts[currentGrade] || [];
+      const pendingList = appData.pendingPosts[currentGrade] || [];
       if (isTeacherMode) {
-        document.getElementById('pending-count').innerText = pendingKeys.length;
-        if (pendingKeys.length === 0) {
-          pendingContainer.innerHTML = `<div class="empty-card" style="padding: 20px;">🎉 目前沒有等待審核的學生投稿。</div>`;
-        } else {
-          pendingContainer.innerHTML = pendingKeys.map((key) => {
-            const item = currentPendingPosts[key];
-            return `
-              <div class="post-card pending-card">
-                <div class="card-actions">
-                  <button class="btn-pass" onclick="approvePost('${key}')">✅ 通過</button>
-                  <button class="btn-reject" onclick="rejectPost('${key}')">❌ 拒絕</button>
-                </div>
-                <h3>${item.title} <small style="font-size:0.9rem; color:#d84315;">[${item.type}] - ${item.name} 同學 (待審核)</small></h3>
-                <p style="font-size:1.15rem; line-height:1.6; color:#311b92;">${item.content}</p>
-              </div>
-            `;
-          }).join('');
-        }
+        document.getElementById('pending-count').innerText = String(pendingList.length);
+        pendingContainer.innerHTML = pendingList.length === 0 ? '<div class="empty-card" style="padding:20px;">🎉 目前沒有等待審核的學生投稿。</div>' : pendingList.map((item, index) => '<div class="post-card pending-card"><div class="card-actions"><button class="btn-pass" onclick="approvePost(' + index + ')">✅ 通過</button><button class="btn-reject" onclick="rejectPost(' + index + ')">❌ 拒絕</button></div><h3>' + escapeHtml(item.title) + ' <small style="font-size:0.9rem; color:#d84315;">[' + escapeHtml(item.type) + '] - ' + escapeHtml(item.name) + ' 同學（待審核）</small></h3><p style="font-size:1.15rem; line-height:1.6; color:#311b92; white-space:pre-wrap;">' + escapeHtml(item.content) + '</p></div>').join('');
+      } else {
+        pendingContainer.innerHTML = '';
       }
-
-      if (approvedKeys.length === 0) {
-        container.innerHTML = `
-          <div class="empty-card">
-            🌟 這裡還沒有同學公開分享的作品喔！<br>點擊右上角「我要投稿分享」提交你的佳作吧！（投稿後需經老師審核）
-          </div>
-        `;
+      if (approvedList.length === 0) {
+        container.innerHTML = '<div class="empty-card">🌟 這裡還沒有同學公開分享的作品喔！<br>點擊右上角「我要投稿分享」提交你的佳作吧！（投稿後需經老師審核）</div>';
         return;
       }
-
-      container.innerHTML = approvedKeys.map((key) => {
-        const item = currentApprovedPosts[key];
-        return `
-          <div class="post-card">
-            ${isTeacherMode ? `<div class="card-actions"><button class="delete-btn" onclick="deleteApprovedPost('${key}')">🗑️ 刪除</button></div>` : ''}
-            <h3>${item.title} <small style="font-size:0.9rem; color:#8e24aa;">[${item.type}] - ${item.name} 同學</small></h3>
-            <p style="font-size:1.15rem; line-height:1.6; color:#311b92;">${item.content}</p>
-          </div>
-        `;
-      }).join('');
+      container.innerHTML = approvedList.map((item, index) => '<div class="post-card">' + (isTeacherMode ? '<div class="card-actions"><button class="delete-btn" onclick="deleteApprovedPost(' + index + ')">🗑️ 刪除</button></div>' : '') + '<h3>' + escapeHtml(item.title) + ' <small style="font-size:0.9rem; color:#8e24aa;">[' + escapeHtml(item.type) + '] - ' + escapeHtml(item.name) + ' 同學</small></h3><p style="font-size:1.15rem; line-height:1.6; color:#311b92; white-space:pre-wrap;">' + escapeHtml(item.content) + '</p></div>').join('');
     }
 
-    function approvePost(key) {
-      const item = currentPendingPosts[key];
+    async function approvePost(index) {
+      if (!isTeacherMode || !supabaseClient) return;
+      const item = (appData.pendingPosts[currentGrade] || [])[index];
       if (!item) return;
-      // 將作品寫入 approvedPosts 並刪除 pendingPosts 中的資料
-      window.dbPush(window.dbRef(window.db, `approvedPosts/${currentGrade}`), item);
-      window.dbRemove(window.dbRef(window.db, `pendingPosts/${currentGrade}/${key}`));
-    }
-
-    function rejectPost(key) {
-      if (confirm("確定要拒絕並刪除這篇投稿嗎？")) {
-        window.dbRemove(window.dbRef(window.db, `pendingPosts/${currentGrade}/${key}`));
+      const result = await supabaseClient.from('posts').update({ status: 'approved', reviewed_by: currentUser.id, reviewed_at: new Date().toISOString() }).eq('id', item.id);
+      if (result.error) {
+        reportError('審批投稿', result.error);
+        return;
       }
+      await loadCurrentGradeData();
     }
 
-    function deleteApprovedPost(key) {
-      if (confirm("確定要刪除這篇已發佈的作品嗎？")) {
-        window.dbRemove(window.dbRef(window.db, `approvedPosts/${currentGrade}/${key}`));
+    async function rejectPost(index) {
+      if (!isTeacherMode || !supabaseClient) return;
+      const item = (appData.pendingPosts[currentGrade] || [])[index];
+      if (!item || !confirm('確定要拒絕這篇投稿嗎？')) return;
+      const result = await supabaseClient.from('posts').update({ status: 'rejected', reviewed_by: currentUser.id, reviewed_at: new Date().toISOString() }).eq('id', item.id);
+      if (result.error) {
+        reportError('拒絕投稿', result.error);
+        return;
       }
+      await loadCurrentGradeData();
     }
 
-    function saveLesson(event) {
+    async function deleteApprovedPost(index) {
+      if (!isTeacherMode || !supabaseClient) return;
+      const item = (appData.approvedPosts[currentGrade] || [])[index];
+      if (!item || !confirm('確定要刪除這篇已發佈的作品嗎？')) return;
+      const result = await supabaseClient.from('posts').delete().eq('id', item.id);
+      if (result.error) {
+        reportError('刪除作品', result.error);
+        return;
+      }
+      await loadCurrentGradeData();
+    }
+
+    function resetLessonForm() {
+      document.getElementById('editing-lesson-index').value = '-1';
+      document.getElementById('input-lesson-title').value = '';
+      document.getElementById('input-lesson-tech').value = '';
+      document.getElementById('input-lesson-before').value = '';
+      document.getElementById('input-lesson-after').value = '';
+    }
+
+    async function saveLesson(event) {
       if (event) event.stopPropagation();
-      const key = document.getElementById('editing-lesson-id').value;
+      if (!isTeacherMode || !supabaseClient) return;
+      const editIndex = Number.parseInt(document.getElementById('editing-lesson-index').value, 10);
       const title = document.getElementById('input-lesson-title').value.trim();
       const tech = document.getElementById('input-lesson-tech').value.trim();
       const before = document.getElementById('input-lesson-before').value.trim();
       const after = document.getElementById('input-lesson-after').value.trim();
-
       if (!title || !after) {
-        alert("請輸入課堂標題與升級好句！");
+        showNotice('請輸入課堂標題與升級好句！');
         return;
       }
-
-      const lessonObj = { title, tech, before, after };
-
-      if (key) {
-        window.dbSet(window.dbRef(window.db, `lessons/${currentGrade}/${key}`), lessonObj);
+      const payload = { grade: currentGrade, title, tech, before_text: before, after_text: after };
+      let result;
+      if (editIndex >= 0 && appData.lessons[currentGrade][editIndex]) {
+        result = await supabaseClient.from('lessons').update(payload).eq('id', appData.lessons[currentGrade][editIndex].id);
       } else {
-        window.dbPush(window.dbRef(window.db, `lessons/${currentGrade}`), lessonObj);
+        result = await supabaseClient.from('lessons').insert(payload);
       }
-
+      if (result.error) {
+        reportError('儲存課堂', result.error);
+        return;
+      }
+      clearNotice();
       closeModal('lesson-modal');
+      resetLessonForm();
+      await loadCurrentGradeData();
     }
 
-    function saveStudentPost(event) {
-      if (event) event.stopPropagation();
-      const name = document.getElementById('input-student-name').value.trim();
-      const type = document.getElementById('input-post-type').value;
-      const title = document.getElementById('input-post-title').value.trim();
-      const content = document.getElementById('input-post-content').value.trim();
-
-      if (!name || !title || !content) {
-        alert("請完整填寫名字、標題與內容！");
-        return;
-      }
-
-      window.dbPush(window.dbRef(window.db, `pendingPosts/${currentGrade}`), { name, type, title, content });
-      closeModal('submit-modal');
-      alert("投稿成功！已傳送至雲端，請等待老師審核發佈喔！");
-
+    function resetPostForm() {
       document.getElementById('input-student-name').value = '';
       document.getElementById('input-post-title').value = '';
       document.getElementById('input-post-content').value = '';
     }
 
-    function openSubmitModal(event) { if (event) event.stopPropagation(); document.getElementById('submit-modal').style.display = 'flex'; }
-    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    async function saveStudentPost(event) {
+      if (event) event.stopPropagation();
+      if (!supabaseClient) {
+        showNotice('網站尚未連接資料庫，暫時不能投稿。');
+        return;
+      }
+      const name = document.getElementById('input-student-name').value.trim();
+      const type = document.getElementById('input-post-type').value;
+      const title = document.getElementById('input-post-title').value.trim();
+      const content = document.getElementById('input-post-content').value.trim();
+      if (!name || !title || !content) {
+        showNotice('請完整填寫名字、標題與內容！');
+        return;
+      }
+      const result = await supabaseClient.from('posts').insert({ grade: currentGrade, name, type, title, content });
+      if (result.error) {
+        reportError('提交投稿', result.error);
+        return;
+      }
+      clearNotice();
+      closeModal('submit-modal');
+      resetPostForm();
+      alert('投稿提交成功！已送交老師審核，審核通過後即會發佈顯示喔！');
+    }
 
-    window.onload = function() {
+    function openSubmitModal(event) {
+      if (event) event.stopPropagation();
+      if (!supabaseClient) {
+        showNotice('網站尚未連接資料庫，暫時不能投稿。');
+        return;
+      }
+      document.getElementById('submit-modal').style.display = 'flex';
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+
+    async function initializeApp() {
+      if (!supabaseConfigured || !supabaseLibraryAvailable) document.getElementById('setup-notice').style.display = 'block';
       initCalendarAndDailyWord();
-    };
+      startDailyRefresh();
+      startDataRefresh();
+      updateTeacherUI();
+      if (!supabaseClient) return;
+      supabaseClient.auth.onAuthStateChange(function(_event, session) {
+        setTimeout(function() { syncSession(session); }, 0);
+      });
+      const sessionResult = await supabaseClient.auth.getSession();
+      if (sessionResult.error) {
+        reportError('讀取登入狀態', sessionResult.error);
+        return;
+      }
+      await syncSession(sessionResult.data.session);
+    }
+
+    window.onload = initializeApp;
   </script>
 </body>
 </html>
