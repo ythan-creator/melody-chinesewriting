@@ -33,7 +33,7 @@
       position: relative;
     }
 
-    /* 頂部 吉伊卡哇 薰衣草紫標題列 */
+    /* 頂部薰衣草紫標題列 */
     header {
       background: linear-gradient(135deg, #e1bee7 0%, #ce93d8 50%, #b39ddb 100%);
       padding: 25px 15px;
@@ -109,25 +109,6 @@
       background-color: #4a148c;
       color: #ffe0b2;
       border-color: #ffd54f;
-    }
-
-    /* Chiikawa 可愛角色公仔裝飾 */
-    .chiikawa-mascot {
-      position: fixed;
-      z-index: 99;
-      pointer-events: none;
-      filter: drop-shadow(0 5px 10px rgba(0,0,0,0.15));
-      animation: floatAnimation 4s ease-in-out infinite;
-    }
-
-    .mascot-1 { bottom: 20px; left: 20px; width: 100px; }
-    .mascot-2 { bottom: 20px; right: 20px; width: 100px; animation-delay: -2s; }
-    .mascot-header-left { top: 10px; left: 30px; width: 70px; animation-delay: -1s; }
-    .mascot-header-right { top: 10px; right: 30px; width: 70px; animation-delay: -3s; }
-
-    @keyframes floatAnimation {
-      0%, 100% { transform: translateY(0px) rotate(0deg); }
-      50% { transform: translateY(-12px) rotate(4deg); }
     }
 
     /* 點擊粒子動畫 */
@@ -490,63 +471,10 @@
 </head>
 <body>
 
-  <!-- Chiikawa 可愛公仔裝飾 -->
-  <div class="chiikawa-mascot mascot-header-left">
-    <svg viewBox="0 0 100 100" width="100%">
-      <ellipse cx="50" cy="55" rx="35" ry="30" fill="#ffffff" stroke="#5a3d46" stroke-width="3"/>
-      <ellipse cx="28" cy="28" rx="8" ry="12" fill="#ffffff" stroke="#5a3d46" stroke-width="3"/>
-      <ellipse cx="72" cy="28" rx="8" ry="12" fill="#ffffff" stroke="#5a3d46" stroke-width="3"/>
-      <circle cx="38" cy="52" r="3.5" fill="#5a3d46"/>
-      <circle cx="62" cy="52" r="3.5" fill="#5a3d46"/>
-      <ellipse cx="30" cy="60" rx="4" ry="2.5" fill="#ffb6c1"/>
-      <ellipse cx="70" cy="60" rx="4" ry="2.5" fill="#ffb6c1"/>
-      <path d="M 46 58 Q 50 62 54 58" fill="none" stroke="#5a3d46" stroke-width="2.5" stroke-linecap="round"/>
-    </svg>
-  </div>
-
-  <div class="chiikawa-mascot mascot-header-right">
-    <svg viewBox="0 0 100 100" width="100%">
-      <ellipse cx="50" cy="55" rx="35" ry="30" fill="#e3f2fd" stroke="#5a3d46" stroke-width="3"/>
-      <path d="M 22 28 Q 28 8 36 28 Z" fill="#e3f2fd" stroke="#5a3d46" stroke-width="3"/>
-      <path d="M 64 28 Q 72 8 78 28 Z" fill="#e3f2fd" stroke="#5a3d46" stroke-width="3"/>
-      <circle cx="38" cy="52" r="3.5" fill="#5a3d46"/>
-      <circle cx="62" cy="52" r="3.5" fill="#5a3d46"/>
-      <ellipse cx="30" cy="60" rx="4" ry="2.5" fill="#ffb6c1"/>
-      <ellipse cx="70" cy="60" rx="4" ry="2.5" fill="#ffb6c1"/>
-      <path d="M 46 59 Q 50 55 54 59" fill="none" stroke="#5a3d46" stroke-width="2.5" stroke-linecap="round"/>
-    </svg>
-  </div>
-
-  <div class="chiikawa-mascot mascot-1">
-    <svg viewBox="0 0 100 100" width="100%">
-      <ellipse cx="50" cy="58" rx="38" ry="32" fill="#ffffff" stroke="#5a3d46" stroke-width="3"/>
-      <ellipse cx="25" cy="30" rx="9" ry="14" fill="#ffffff" stroke="#5a3d46" stroke-width="3"/>
-      <ellipse cx="75" cy="30" rx="9" ry="14" fill="#ffffff" stroke="#5a3d46" stroke-width="3"/>
-      <circle cx="36" cy="54" r="4" fill="#5a3d46"/>
-      <circle cx="64" cy="54" r="4" fill="#5a3d46"/>
-      <ellipse cx="28" cy="63" rx="5" ry="3" fill="#ffab91"/>
-      <ellipse cx="72" cy="63" rx="5" ry="3" fill="#ffab91"/>
-      <path d="M 45 61 Q 50 66 55 61" fill="none" stroke="#5a3d46" stroke-width="3" stroke-linecap="round"/>
-    </svg>
-  </div>
-
-  <div class="chiikawa-mascot mascot-2">
-    <svg viewBox="0 0 100 100" width="100%">
-      <ellipse cx="50" cy="58" rx="38" ry="32" fill="#fff9c4" stroke="#5a3d46" stroke-width="3"/>
-      <ellipse cx="32" cy="20" rx="6" ry="18" fill="#fff9c4" stroke="#5a3d46" stroke-width="3"/>
-      <ellipse cx="68" cy="20" rx="6" ry="18" fill="#fff9c4" stroke="#5a3d46" stroke-width="3"/>
-      <circle cx="36" cy="54" r="4" fill="#5a3d46"/>
-      <circle cx="64" cy="54" r="4" fill="#5a3d46"/>
-      <ellipse cx="28" cy="63" rx="5" ry="3" fill="#ffab91"/>
-      <ellipse cx="72" cy="63" rx="5" ry="3" fill="#ffab91"/>
-      <path d="M 44 60 Q 50 67 56 60 Z" fill="#5a3d46"/>
-    </svg>
-  </div>
-
-  <!-- 頂部吉伊卡哇紫色標題列 -->
+  <!-- 頂部紫色標題列 -->
   <header>
     <div class="header-title">💜 Melody的寫作百寶袋 💜</div>
-    <div class="header-sub">吉伊卡哇陪伴學習 · 香港小學中文寫作平台</div>
+    <div class="header-sub">香港小學中文寫作平台</div>
     <div class="nav-controls">
       <button class="btn" onclick="showGateway()">🌸 切換年級</button>
       <button class="btn btn-teacher" id="btn-toggle-teacher" onclick="handleTeacherToggle()">👩‍🏫 教師登入 <span id="teacher-status">(未登入)</span></button>
